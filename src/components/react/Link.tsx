@@ -1,4 +1,5 @@
 import React, { type HTMLAttributes } from "react";
+import styles from "./Link.module.css";
 
 type Props = HTMLAttributes<HTMLAnchorElement>;
 
@@ -10,8 +11,8 @@ const Link = (props: Props & { href: string }) => {
   return (
     <a
       href={href}
-      className={className + (isActive ? " active" : "")}
       {...restProps}
+      className={isActive ? styles.isActive : ''}
     >
       {props.children}
     </a>
