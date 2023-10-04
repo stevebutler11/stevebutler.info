@@ -1,23 +1,39 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-
-		</style>
-	</head>
-	<body>
-		<Header title={SITE_TITLE} />
-		<main>
-			<h1>HI!</h1>
-		</main>
-		<Footer />
-	</body>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <style></style>
+  </head>
+  <body>
+    <Header title={SITE_TITLE} />
+    <main>
+      <h2>HI, I'm Steve &#128075;</h2>
+      <p>I live in Saltaire, West Yorkshire.</p>
+      <p>
+        I wear many hats at{" "}
+        <a
+          href="https://www.asdlighting.com"
+          target={"_blank"}
+          rel="noreferrer"
+        >
+          ASD Lighting plc
+        </a>
+         , but mainly I'm focused on software development.
+      </p>
+      <p>
+        I'm also studying a BSc Computer Science at the University of London,
+        Goldsmiths.
+      </p>
+      <p>
+        Have a look around. If you'd like to chat, contact me!</p>
+    </main>
+    <Footer />
+  </body>
 </html>
