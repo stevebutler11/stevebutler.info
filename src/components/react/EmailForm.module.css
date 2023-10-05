@@ -1,0 +1,89 @@
+.snackbar {
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+
+.snackbar svg {
+  padding: 0px 0px 0px 20px;
+}
+
+.snackbar svg:hover {
+  fill: var(--accent-lighter);
+  padding: 0px 0px 0px 20px;
+  cursor: pointer;
+}
+
+.formInputs {
+  font-family: 'ProtoMonoLight', sans-serif;
+  margin: 8px 0px;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.topRow {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 600px) {
+  .topRow {
+    flex-direction: column;
+  }
+}
+
+.fieldErrorCombo {
+  display: flex;
+  flex-direction: column;
+  color: red;
+  font-size: 10px;
+}
+
+.topRow > * {
+  flex-grow: 1;
+}
+
+.sendButton {
+  font-family: 'ProtoMonoLight', sans-serif;
+  border: none;
+  padding: 8px;
+  padding-left: 48px;
+  padding-right: 48px;
+  width: fit-content;
+  background-color: var(--accent);
+  color: var(--black);
+  /* display: flex; */
+}
+
+.sendButton:hover {
+  font-family: 'ProtoMonoLight', sans-serif;
+  background-color: var(--accent-lighter);
+  color: var(--palewhite);
+  cursor: pointer;
+}
+
+.spinner {
+  animation-name: spin;
+  animation-duration: 500ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

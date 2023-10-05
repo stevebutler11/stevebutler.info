@@ -9,7 +9,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
 <html lang="en">
   <head>
     <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <style></style>
+    <style>
+      p {
+        color: var(--gray);
+      }
+    </style>
   </head>
   <body>
     <Header title={SITE_TITLE} />
@@ -23,16 +27,14 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
           target={"_blank"}
           rel="noreferrer"
         >
-          ASD Lighting plc
-        </a>
-         , but mainly I'm focused on software development.
+          ASD Lighting plc</a
+        >, but mainly I'm focused on software development.
       </p>
       <p>
         I'm also studying a BSc Computer Science at the University of London,
         Goldsmiths.
       </p>
-      <p>
-        Have a look around. If you'd like to chat, contact me!</p>
+      <p>Have a look around. If you'd like to chat, contact me!</p>
     </main>
     <Footer />
   </body>
