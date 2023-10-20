@@ -65,6 +65,7 @@ h6 {
 	margin: 0 0 0.5rem 0;
 	color: var(--accent-light);
 	line-height: 1.2;
+	margin: 1em 0em;
 }
 h1 {
 	font-size: 3.052em;
@@ -95,9 +96,9 @@ p {
 	font-family: 'Share Tech Mono', monospace;
 	margin-bottom: 1em;
 }
-/* .prose p {
-	margin-bottom: 2em;
-} */
+.prose p {
+	margin-bottom: 1em;
+}
 .prose p, li {
 	font-family: 'Share Tech Mono', monospace;
 }
@@ -141,6 +142,10 @@ blockquote {
 hr {
 	border: none;
 	border-top: 1px solid var(--gray-light);
+}
+
+.text-center {
+	text-align: center;
 }
 
 @media (max-width: 720px) {
