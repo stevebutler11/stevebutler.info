@@ -1,0 +1,278 @@
+---
+title: 'CM3020 (AI) Course Notes'
+description: 'Course notes for CM3020: Artificial Intelligence third year course at the University of London'
+pubDate: 'Oct 16 23'
+updatedDate: 'Oct 22 23'
+heroImage: '/uol-logo.svg'
+---
+import Latex from '../../components/Latex.astro'
+
+# Overview
+
+The course will be focused on four case studies, where there will be a deep-dive into four particular AI systems. These case studies will be:
+
+- AI game player (DeepMind 2015 paper)
+- Robot Scientist
+- Evolving creature (Karl Sims '90s paper)
+- Creative AI
+
+## AI game player  
+
+This case study is organised into five weeks of content:  
+
+__Week 1:__ Introduction to AIs that play video games and reinforcement learning  
+__Week 2:__ Formalising reinforcement learning and the Deep Q Network agent  
+__Week 3:__ Tooling - openai gym, keras and convolutional neural networks  
+__Week 4:__ Implementation of the DQN agent  
+__Week 5:__ State of the art and ethics in AI game players  
+
+[Week 1 slides](https://d3c33hcgiwev3.cloudfront.net/DyzJxEt8QSasycRLfNEmCQ_20f82746a30348cebf9eeb4009b768e1_ai-game-player-wk1.pdf?Expires=1697587200&Signature=LOz6LjYolfeBEUfLY7~V~Vcjmi5dstUjgZI-KtLxdpBdchoDkB7W95ZibbMG0pTaX57cOmeriR3mXzPWLBG7SrLRamkXHmpBPGroXouVAvJKBPisJwC37u2mi8eDlubrjKrOLHXFRERFAMo5JGmshH46EKzXmn1gbCGxHZxAkiE_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
+
+### Week 1: Introduction to AIs that play video games and reinforcement learning  
+
+We'll be looking at the 2015 research paper from DeepMind, where they developed a system called Deep Q Networks.  
+They built a game-playing agent using this technology, which was able to get human competitive levels of gameplay technique across a range of different retro video games, specifically Atari.
+
+#### Playing games with AI
+
+why play games with AI?  
+> _"Games are interesting because they are too hard to solve"_  
+> __Stuart, Norvig, "Artificial Intelligence: A Modern Approach"__
+
+Games contain all kinds of interesting, hard to solve problems e.g. if you're playing a fast action game, how do you analyze the visual input quickly enough so that you can act in an effective way?  
+If you're playing a more long term strategy type game, how do you make sure that you can develop a strategy and adapt it dynamically as conditions change?  
+There's all kinds of classic problems from AI to do with hidden information, planning and visual analysis, all kinds of things that come out when you try and play games with AI
+
+#### Commercial interests in AI game playing
+
+> _"Relying exclusively on playtesting conducted by humans can be costly and inefficient. Artificial agents could perform much faster play sessions, allowing the exploration of much more of the game space in much shorter time"_  
+> __Zhao et al, "Winning Isn't Everything"__
+
+#### The role of competitions
+
+Competitions have the role of providing software, interfaces and scoring procedures to fairly and independently evaluate competing algorithms. These competitions motivate researchers. Existing algorithms get applied to new areas, and the effort needed to participate is less than it takes to write new experimental software
+
+#### Moravec's Paradox
+
+Moravec's paradox is the observation in artificial intelligence and robotics that, contrary to traditional assumptions, reasoning requires very little computation, but sensorimotor and perception skills require enormous computational resources.  
+The principle was articulated by Hans Moravec, Rodney Brooks, Marvin Minsky and others in the 1980s.  
+> _"it is comparatively easy to make computers exhibit adult level performance on intelligence tests or playing checkers, and difficult or impossible to give them the skills of a one-year-old when it comes to perception and mobility"_  
+> __Hans Moravec, 1988__
+
+This paradox leads to the trend of generalisation in game-playing AI's
+
+#### When will it end?
+
+> _"An ultimate goal that would demonstrate that an AI system can fully master a game, beyond extrinsic factors of human vs. human competitions, would be to allow anyone to play against it over a long period of time"_  
+> __Justensen, Niels, Debus, Risi, "When are we done with games?"__
+
+Teams like OpenAI and DeepMind have done just that, putting DOTA5 and AlphaStar online for humans to play against. According to researchers however, the games are somewhat constrained to certain scenarios and so are not completely fair.
+
+### AI game player milestones
+
+| Year        | Event       | Paper       |
+| :-----------: | :-----------: | :-----------: |
+| 1950 | Seminal work on chess playing algorithms by Claude Shannon, where he defined the first formal definition of a chess playing algorithm | Shannon, C. 'Programming a computer for playing chess', Philosophical Magazine 41(4) 1950, pp.256–75. |
+| 1952 | The first checkers/drafts playing algorithm | Strachey, C. 'Logical or non-mathematical programmes' in: Proceedings of the Association for Computing Machinery Meeting (New York: Association of Computing Machinery, 1952) pp.46–49. |
+| 1979 | A backgammon computer algorithm beats a world champion | Berliner, H. 'Backgammon computer program beats world champion', Artificial Intelligence 14(2) 1980, pp.205–20. |
+| 1989 | The Computer Olympiad is created (still running today). A competition for computer vs. computer games |  |
+| 1992 | A world championship caliber checkers program is published | Schaeffer, J. et al. 'A world championship caliber checkers program', Artificial Intelligence 53:2–3 1992, pp.273–89. |
+| 1997 | IBM's Deep Blue beats Garry Kasparov at chess | Campbell, M.A., J. Hoane Jr and Feng-hsiung Hsu 'Deep blue', Artificial Intelligence 134(1–2) 2002, pp.57–83. |
+| 2002 | World-championship-caliber Scrabble was reported | Sheppard, B. 'World-championship-caliber Scrabble', Artificial Intelligence 134(1–2) 2002, pp.241–75. |
+| 2007 | Completely solved checkers | Schaeffer, Johnathan et al "Checkers is solved", Science 317.5844 (2007): 1518-1522 |
+| 2009 | Mario AI competition started (ran until 2012). It inspired other game competitions to start | Togelius, J. et al. 'The Mario AI championship 2009–2012', AI Magazine 34(3) 2013, pp.89–92. |
+| 2015 | Important paper published by DeepMind w.r.t AI agents playing Atari games | Mnih, V. et al. 'Human-level control through deep reinforcement learning', Nature 518(7540) 2015, pp.529–33. |
+| 2016 | A world-champion beating Go algorithm created, again by DeepMind (documentary on Youtube) | Silver, D. et al. 'Mastering the game of go without human knowledge', Nature 550(7676) 2017, pp.354–59. |
+| 2018 | Superhuman poker playing AI created, beats top pros at version of poker widely accepted as hardest version | Brown, N. and T. Sandholm 'Superhuman AI for heads-up no-limit poker: Libratus beats top professionals', Science 359(6374) 2018, pp.418–24 |
+| 2019 | OpenAI creates DOTA II playing AI, DOTA 5 that competes with world champions (in constrained circumstances) | Raiman, J., S. Zhang and F. Wolski 'Long-term planning and situational awareness in OpenAI five', arXiv preprint arXiv:1912.06721 (2019). |
+| 2020 | DeepMind releases Atari57, which beats top players in ALL 57 Atari games. Important stepping stone to the idea of general problem solving | Badia, A.P. et al. 'Agent57: Outperforming the atari human benchmark', International Conference on Machine Learning. PMLR, 2020. |
+### How might one build a game playing AI?
+
+#### Context
+
+We are going to look in depth at the DQN agent from the Atari DeepMind 2015 paper. You might ask why this one and not the 2020 paper that was improved? The 2015 paper can be seen as a more pure implementation of concepts and is manageable for this course. The 2020 paper has added complications that does not lend itself to the scope and length of this course.
+
+#### Possible steps
+- play the game, reflect upon the decisions being made:
+  - how are points won?
+  - which way is the ball going?
+  - where are the bricks?
+  - how can I get the ball on the correct side of the bat? etc.
+- develop a model of the game playing agent:
+  - it wants to be as close to the human playing the game as possible e.g. rather than being given the coordinates of the ball, bat and bricks etc., the agent will just receive the RGB values of the screen, much like a human perceives the game
+![breakout-gpa](../../../public/breakout-gpa.png)
+- consider how to design the AI
+  - maybe just create a big input-output data set and train a network
+  - but what does that data set look like? Is it going to have every possible screen that it could ever see? And is it going to say exactly what the correct move is to make in every possible screen? If so, how do we create that data? Do we get someone to meticulously label all the millions of possible screens?
+
+##### Reinforcement learning
+> _"How agents can learn what to do in the absence of labelled examples of what to do."_  
+> _"Imagine playing a new game whose rules you don't know; after a hundred or so moves, your opponent announces, you lose. This is reinforcement learning in a nutshell"_  
+> __Stuart, Norvig, "Artificial Intelligence: A Modern Approach"__
+
+From the descriptions above, it seems that reinforcement learning is an appropriate set of algorithms to be investigating. Later on, we'll formally describe the reinforcement learning problem. For now however, think about what the following are in terms of the breakout game:
+
+- states
+- actions
+- rewards
+
+These are the key elements of a reinforcement learning algorithm
+
+### Week 2: Reinforcement learning and DQN agents
+
+[week 2 slides](https://d3c33hcgiwev3.cloudfront.net/pOwpiMA_S2usKYjAP6trnA_b197a6de118644d19f31be9557fd10e1_ai-game-player-wk2.pdf?Expires=1698105600&Signature=E81mamWXdceYZY0Wv2LAOyn6hbQ1snO6vrA-MuijBU99GTtmLxQ3ZqVhAtbSM-YFqpOv4Fl3ictZK4-LsdraHOLSQ3fp22cnf8LPS4mrLFY4nslPeVWPh-bm-2~5elDTvcR6fls6RGPOJ8L0os2RCaZ0v6y7973Y5Yz2rDxVMpY_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
+
+#### Formalising the problem
+
+How can we create an AI that can play games? Most games involve an iterated process of observing and acting. Most games involve some sort of positive or negative result. Think of an arcade game:
+- what are the observations?
+- what are the vailable actions?
+- what is the result and when is it received?
+
+In the case of breakout:
+- the state is the current view of the game
+- the actions are move left, move right or stay still
+- the reward is 1 point each time you hit a brick or game over if you miss the ball
+
+##### formalising this
+
+The player observes state <Latex formula='s' />  
+The player takes action <Latex formula='a' />  
+The player observes the next state <Latex formula="s'" />  
+<Latex formula="s,a \rarr s'" centered={true} />
+This is stochastic, so we can add probability <Latex formula="P" /> to the transition:
+<Latex formula="P(s'|a,s)" centered={true} />
+> The reason it is stochastic is that the ball can be moving in any direction, and a snapshot of the screen (state) does not indicate which direction the ball is moving.  
+You can read the above expression as '_probability of state prime, given state and action_'
+
+##### rewards
+
+There is a reward associated with the <Latex formula="s,a,s'" /> construct
+<Latex formula="s,a,s',r" centered={true} />
+So, taking action <Latex formula="a" /> in state <Latex formula="s" /> leads to state <Latex formula="s'" /> and a reward of <Latex formula="r" />
+We can say that the reward is a function on the <Latex formula="(s,a,s')" /> construct
+<Latex formula="R(s,a,s')" centered={true} />
+
+> Think of breakout, when you go from a state of 7 bricks to 6 bricks, you gain a point
+
+##### Markov Decision Process
+
+We have ourselves a __Markov Decision Process__ which is a way to formalise a <mark>stochastic sequential decision problem</mark>
+
+state transition: <Latex formula="P(s'|a,s)" />  
+reward function: <Latex formula="R(s,a,s')" />  
+
+> stochastic - pertaining to probability, sequential - due to the nature of having to make a series of decisions
+
+The _decision_ in this particular MDP is what action to take next in the game
+
+#### Value functions and DQN
+
+##### Action policy
+
+How do we decide what action to take in a given state?
+
+The __action policy__ tells us what to do in a given state
+
+policies are denoted <Latex formula='\pi' />, so:
+
+<Latex formula='\pi (s) \rarr a' centered={true} />
+
+> The policy for state <Latex formula='s' /> is to take action <Latex formula='a' />  
+> the policy is simply a mapping between state and actions
+
+What is a optimal policy?
+
+Remember, this is a sequential decision problem, not a "one shot". The reward might come in the _far future_ (as opposed to say an image classifier which has instantaneous reward feedback).  
+Therefore an optimal policy maximizes reward over a sequence of actions.  
+The action you take now should unlock maximum potential rewards going into the future.  
+The Bellman equation formalises this.
+
+##### Bellman equation
+
+<Latex formula='V^*(s,a)=\underset{\pi}{max}\sum [r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + ... | s_t=t, a_t=a, \pi]' centered={true}/>
+
+Breaking it down:
+
+<Latex formula='V^*(s,a)' />
+> The value of action <Latex formula='a' /> in state <Latex formula='s' />  
+
+<Latex formula='r_t' /> 
+> The immediate reward for taking the action (actually the <Latex formula='r' /> from <Latex formula="(s, a, s', r)" /> mentioned earlier)  
+
+<Latex formula='\gamma r_{t+1} + \gamma^2 r_{t+2} + ...' />
+> The value of the reward in the next (future) time step, scaled by gamma (< 1), plus The value of the reward in the step after that, scaled by gamma squared and so on.  
+> Essentially this is saying, "further in the future we're not that confident of what will happen, so we'll take less of that reward"
+
+<Latex formula='\underset{\pi}{max}' />
+> Choose the most valuable thing in the action policy at every time. So <Latex formula="\pi" /> is the action policy, <Latex formula="max" /> is just saying the highest.
+
+Bringing all of this together:
+
+> The value of action <Latex formula='a' /> in state <Latex formula='s' /> is the reward for <Latex formula='s' />, plus the maximum possible future reward for states <Latex formula='s' /> at time <Latex formula='t' />, increasingly discounted by factor <Latex formula='\gamma' /> raised to the power of <Latex formula='t' />.  
+> __N.B.__ We did not include the probability of state transitions here.
+
+But what are the future states and rewards?
+
+The __state transition matrix__ tells us how the state will change over time based on our chosen actions.  
+The __action policy__ dictates what the chosen actions will be in each state. It involves choosing the highest value action.  
+The problem is we need to know the complete transition matrix and the associated rewards to make an action policy – not easy for Atari games! (too many possible combinations of state and most have zero reward)
+
+The answer to the incomplete MDP data is to approximate the value function - that function is the __Q function__  
+
+##### The Q-function and Q-learning
+
+<Latex formula='Q^*(s,a)=\underset{\pi}{max}\sum [r_t + \gamma r_{t+1} + \gamma^2 r_{t+2} + ... | s_t=t, a_t=a, \pi]' centered={true}/>
+
+(just swap out the <Latex formula='V' /> for a <Latex formula='Q' />)
+
+Q-learning involves learning the best Q-function that we can, <Latex formula='Q^*' />:
+
+Q-learning is essentially saying:
+> "I'm not going to have a perfect value function. I don't worry about that, but I'm going to try and get my best approximation of what the value function is. So I'm going to somehow through observation, learn what the value function is."
+
+So instead of having to know the state transition matrix and the action policy, we somehow _learn_ the mapping between states and actions, and the value of a given action in a given state.  
+So all we need to know is the state and the action, and then we can find out what the value is.
+
+There are various methods to do Q-learning, but most of them don't work for real problems. The one that works here is to use a _deep neural network_, hence:
+
+Deep Q Network (DQN)
+
+#### DQN agent architecture
+
+> __agent__  
+> An entity that can observe and act autonomously
+
+We need an agent architecture that solves two problems:
+1. no state transition matrix
+2. no action policy
+
+![DQN agent architecture](../../../public/DQN-agent-architecture.png)
+
+The DQN agent consists of two main components, the __replay buffer__ and the __Q function__.  
+
+The replay buffer gathers observations of:
+- states
+- actions taken in those states
+- what the next state was
+- what the reward was 
+- whether the game was done at the end of that or not. 
+
+So the replay buffer consists of many hundreds and thousands of observations of what's happened as the agent is taking actions in the world.
+
+As shown above, the Q-function tells us in the given state what the value of all the available actions are, so that the agent can choose the highest value action.
+
+The behavior of the agent is to collect observations, periodically stopping to train the Q-function up on its current set of observations (or some batch of them).
+
+##### Epsilon greedy exploration
+
+The method that the agent uses to fill up the replay buffer is called 'epsilon greedy exploration'.
+
+In the beginning the agent has no Q-function, as the replay buffer is empty so no training has been done. At this point, the agent uses a random function to randomly choose actions to take, and then add to the replay buffer.  
+Periodically it will train the Q-function on the values added to the replay buffer.  
+As time progresses, the agent begins to rely more and more on the Q-function to decide actions it takes in the world. This is what the 'greedy' refers to in epsilon greedy.  
+So at the beginning you start with zero 'greed', and as epsilon increases, we more and more start relying on the burgeoning, growing, learning Q-function to select our moves.  
+
+The beauty of this approach is its ability to kickstart the agent with somewhat random exploratory behavior. However, as the agent learns and the Q-function improves with time, it gradually shifts from this exploratory phase to adopting a more concrete, effective policy that leads to rewards.  
+It's important to note that behaving randomly typically doesn't result in rewards. The agent endeavors to identify basic patterns or sequences, albeit in a somewhat random manner, that have the potential to yield rewards.  
+Eventually, the Q function helps the agent piece these basic patterns together into more significant sequences. In essence, this approach involves refining the agent's behavior over time to align more closely with its acquired knowledge of the environment, presenting an elegant solution.
