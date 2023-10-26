@@ -349,3 +349,176 @@ There is another way that show the __energy__ of a sound. As eluded to earlier, 
 A spectrogram is very similar to the frequency domain representation, but here it also visualises how the spectrum changes through time
 
 ![spectrogram representation](../../../public/spectrogram-rep.png)
+
+## Digitising, representing and storing audio signals - part 2
+
+### Audio editors: intro to audacity
+
+The first lecture shows how to download and install audacity and takes a tour through it's features and how to use it. Relevant links are here:  
+[Home page](https://www.audacityteam.org/)  
+[Download page](https://www.audacityteam.org/download/)  
+[Manual](https://manual.audacityteam.org/)  
+[Tutorials](https://manual.audacityteam.org/#tutorials)  
+
+### Audio programming with p5.js
+
+To use sound with the p5.js library, you need to include the p5.sound library also:  
+[p5.sound page](https://p5js.org/reference/#/libraries/p5.sound)
+
+The p5 sound library builds on top of the [web audio api](https://www.w3.org/TR/webaudio/), a high level js api for processing and synthesising audio in web applications.
+
+see code snippets below from lecture for loading and playing audio files:
+
+##### loading and playing back audio files
+
+```javascript
+let mySound;
+let playStopButton;
+
+function preload() {
+  soundFormats('mp3', 'wav');
+  mySound = loadSound('/sounds/apollo13');
+}
+
+function setup() {
+  createCanvas(400, 200);
+  background(180);
+
+  playStopButton = createButton('play');
+  playStopButton.position(20, 20);
+  playStopButton.mousePressed(playStopSound);
+}
+
+function playStopSound() {
+  if (mySound.isPlaying()) {
+    mySound.pause()
+    playStopButton.html('play');
+  } else {
+    mySound.loop()
+    playStopButton.html('pause');
+  }
+}
+```
+
+##### playback controls
+
+```javascript
+let mySound;
+let playStopButton;
+let sliderVolume;
+let sliderRate;
+let sliderPan;
+let jumpButton;
+
+function preload() {
+  soundFormats('mp3', 'wav');
+  mySound = loadSound('test');
+}
+
+function setup() {
+  createCanvas(400, 200);
+  background(180);
+
+  // setup the UI
+  playStopButton = createButton('play');
+  playStopButton.position(200, 20);
+  playStopButton.mousePressed(playStopSound);
+
+  jumpButton = createButton('random jump');
+  jumpButton.position(250, 20);
+  jumpButton.mousePressed(randomJumpSound);
+
+  sliderVolume = createSlider(0, 2, 1, 0.01);
+  sliderVolume.position(20, 25);
+  text('volume', 80, 20);
+
+  sliderRate = createSlider(-2, 2, 1, 0.01);
+  sliderRate.position(20, 70);
+  text('rate', 80, 65);
+  
+  sliderPan = createSlider(-1, 1, 0, 0.01);
+  sliderPan.position(20, 115);
+  text('pan', 80, 110);
+}
+
+function draw() {
+  mySound.setVolume(sliderVolume.value());
+  mySound.rate(sliderRate.value());
+  mySound.pan(sliderPan.value());
+}
+
+// callback for play/pause button
+function playStopSound() {
+  if (mySound.isPlaying()) {
+    mySound.pause()
+    playStopButton.html('play');
+  } else {
+    mySound.loop()
+    playStopButton.html('pause');
+  }
+}
+
+// callback for random jump button
+function randomJumpSound() {
+  const dur = mySound.duration();
+  const t = random(dur);
+  mySound.jump(t);
+}
+```
+
+##### Capture and record audio
+```javascript
+let mic;
+let recorder;
+let soundFile;
+let state = 0;
+
+function setup() {
+  createCanvas(400, 400);
+
+  mic = new p5.AudioIn();
+  mic.start();
+
+  recorder = new p5.SoundRecorder();
+  recorder.setInput(mic);
+
+  soundFile = new p5.SoundFile();
+}
+
+function draw() {
+  // background(200);
+  let vol = mic.getLevel();
+
+}
+
+function mouseClicked() {
+  if (getAudioContext().state !== 'running') {
+    getAudioContext().resume();
+  }
+  
+  if (state === 0 && mic.enabled) {
+    background(255,0,0);
+    text('Recording', 40, 40);
+
+    recorder.record(soundFile);
+    state++;
+
+  } else if (state === 1) {
+    background(0,255,0);
+    text('Click to play and download!', 40, 40);
+
+    recorder.stop();
+    state++;
+
+  } else if (state === 2) {
+    background(200);
+    text('Click to record', 40, 40);
+
+    soundFile.play();
+    save(soundFile, 'output.wav');
+
+    state = 0;
+  }
+}
+```
+
