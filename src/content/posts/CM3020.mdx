@@ -332,3 +332,189 @@ The Y-channel (luminance) was extracted from each frame and used instead. This r
 ###### Image processing: resizing
 
 The frames were then resized from 216 pixels to 84x84 to reduce data size further.
+
+### Week 3: Tooling - openai gym, keras and convolutional neural networks
+
+#### Open AI gym
+
+What is openai gym?
+- A way of providing standardised environments for reinforcement learning algorithms to operate in
+- Allows the developer to focus on their agent instead of the simulation
+- Includes versioned, standard set of environments enabling easy comparison
+
+There are various gym-like systems:
+- arcade learning environment (2013)
+- visdoom (2016)
+- openai gym (2016)
+
+common openai workflows:
+
+```python
+# listing all known environments
+x = gym.envs.registry.all()
+
+# make games
+ll_env = gym.make('LunarLanderContinuous-v2')
+bw_env = gym.make('gym_gs:breakwall-v0')
+
+'''
+basic gym runtime
+'''
+
+# reset the game
+ll_env.reset()
+
+# initiate a step in the game, 
+# passing the actions as arg(s)
+ll_env.step([0, 0])
+
+# render the resultant game frame to screen
+ll_env.render()
+
+'''
+action space
+'''
+
+# list space of actions you can take
+ll_env.action_space
+bw_env.action_space
+
+# take a random action
+ll_env.action_space.sample()
+
+# stepping and acting
+for i in range(1000):
+  act = ll_env.action_space.sample()
+  ll_env.step(act)
+  ll_env.render()
+
+'''
+stepping returns some variables in a tuple
+'''
+
+o,r,d,i = ll_env.step([0,0])
+# o (observations) is the 's' from the MDP
+# r is the r (reward)
+# d is 'done' (wether or not the game is finished)
+# i is game diagnostic info
+```
+
+#### Introduction to Keras and neural networks
+
+###### What is a neural network?
+
+> A set of processing units (nodes/neurons) connected together into a ‘neural network'
+
+Essentially, you feed some numbers in one end and other numbers come out of the other end
+
+Training a neural network involves incrementally adjusting the settings of the processing units until they cause the correct outputs to come out in response to a set of inputs.  
+DQN uses a neural network to learn the Q function, the input is game state and the output is values of all actions
+
+###### What is Keras?
+
+> High level neural network API sitting atop tensorflow
+
+##### Layers
+
+Neural networks are made out of layers. Deep neural networks typically have quite a few layers.  
+There are different types of layers with different nodes in them which process the signal in different ways.
+
+![neural network](../../../public/NN.png)
+
+Keras provides lots of different [layer types](https://keras.io/api/layers/)
+
+###### core layers
+- dense layer
+- activation layer
+- embedding layer
+- masking layer
+- lambda layer
+
+###### more elaborate layers
+- convolution layers (great for image processing)
+- recurrent layers e.g. LSTM, GRU (great for sequential data)
+- attention layers (even better for sequential data processing)
+
+__DQN uses some common layers plus some convolutional layers__
+
+##### Activation functions
+
+Activation functions dictate how certain types of nodes transfer the signal from input to output.  
+The activation function is based on a biological metaphor of neurons in the brain. If the sum of all the signals coming in is high enough, then the neuron will fire.  
+This is the most basic activation function. There are others e.g. Linear (as the input increases, the output increases), Sinusoidal etc.  
+The _purpose_ of an activation function is to control when the neuron outputs or how much output, so it can combine lots of inputs and respond to those.
+
+##### Weights
+
+Weights dictate the behaviour of a layer, e.g.
+- scaling the value of connections between nodes
+- configuring the properties of more complex layers
+
+The weights interact with the activation function. Weights are the elements that are adjusted over time with training.
+
+##### Loss function
+
+Loss functions dictate the error between the achieved and expected outputs. The loss is fed back into the network using back propagation.
+
+There are built-in loss functions but you may want to define your own, e.g. if you do not know what the correct expected output is (no ground truth).  
+DQN uses a custom loss function based on the Bellman equation
+
+##### Complete picture
+1. Build model from layers
+2. Initialise weights
+3. Feed in batch of inputs
+4. Calculate loss on outputs
+5. Back propagate loss into the network
+6. Back to 3
+
+#### Convolutional layers
+
+###### What is convolution?
+
+> Convolution is a filtering technique, often used for images but also other signals.  
+
+Essentially, you calculate the new value for a pixel by adding together scaled values of the original pixel and its surrounding pixels.
+
+examples of convolutions:
+- blur
+- edge detection
+
+###### How does convolution work?
+
+A filter moves over the pixels of an image, and at each step scales the pixels within the <mark>filter kernel</mark> and sums them.
+
+![convolution](../../../public/conv.png)
+
+###### example filter kernels:
+
+blur:
+
+```python
+[
+  [0.5, 0.5., 0.5],
+  [0.5, 0.5., 0.5],
+  [0.5, 0.5., 0.5],
+]
+```
+
+edge detect:
+
+```python
+[
+  [-1,-1,-1],
+  [-1, 9,-1],
+  [-1,-1,-1],
+]
+```
+
+###### What is convolutional layer?
+
+> A neural network layer which applies trainable filters to image or other data
+
+Instead of hardcoding the kernel filter parameters, we learn them
+
+convolutional layer properties:
+- filters (how many filters, applied in parallel - stack the layers to apply in series)
+- size (filter kernel size)
+- stride (hop size)
+
