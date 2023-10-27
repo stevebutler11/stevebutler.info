@@ -4,6 +4,7 @@ description: 'Course notes for CM3040: Physical Computing and the Internet of Th
 pubDate: 'Oct 17 23'
 heroImage: '/uol-logo.svg'
 ---
+import Latex from '../../components/Latex.astro'
 
 # Course learning objectives
 
@@ -138,3 +139,125 @@ In the last decade(s), _microservices architecture_, a subset of the SOA style h
 
 
 Week 2 was basically setting up the programming environment, adruino IDE and nodeMCU esp8266 boards for programming
+
+### Week 3: Introduction to electricity, analog and digital IO
+
+###### Electricity
+
+> The flow of electrons moving through a conductive material
+
+###### Current
+
+> The rate at which electrons flow through a circuit. Measured in Amperes, or Amps
+
+###### Resistance
+
+> The measure of a material's ability to restrict/oppose electrical flow. measured in Ohms (<Latex formula='\Omega' />)
+
+Resistors are colour coded components introduced in the 1920's. Each colour corresponds to a number (digits, multiplier, tolerance etc)
+
+![resistors](../../../public/assets/cm3040/resistors.png)
+
+###### Voltage
+
+> The difference in charge between two different points
+
+###### Ohm's law
+
+<Latex formula='V=I \cdot R' centered={true} />
+
+###### Capacitor
+
+> Capacitors store small amounts of energy. There are 6 types:
+
+- electrolytic
+- ceramic disk
+- tantalum
+- mica
+- paper
+- film
+
+<mark>Be Careful:</mark> Current can still flow from the capacitor once power has been removed
+
+###### Transistor
+
+> semiconductor device used to amplify or switch electrical signals
+
+They are activated upon electric current instead of mechanical
+
+###### Switches
+
+There are two types of switches:
+- binary (push button, reed switch etc.)
+- non-binary (selector switch etc.)
+
+###### Actuators
+
+> Devices that use a form of power to convert a control signal into mechanical motion
+
+Actuators require a controlled release of energy
+
+#### Understanding digital and analog I/O signals
+
+Analog signals are a continuous waveform of voltage between zero to the maximum voltage, i.e. 3.3V for the ESP microcontroller or 5V for any standard Arduino microcontroller.  
+The voltage value needs to be converted to an analog value with respect to the bit rate of the microcontroller. This conversion takes time and introduces noise due to fluctuation of the voltage.  
+On the contrary, the digital signal values typically are high (1) when the voltage is above 50 percent, or low (0) when it is below a 50 percent threshold.  
+This process enables faster processing and has a low noise or error rate when reading the values
+
+##### Voltage dividers
+
+Microcontrollers have inbuilt voltage dividers to reduce input voltage to a lower output voltage. These dividers essentially use two resistors to lower the voltage as described in the figure below:
+
+![voltage divider](../../../public/assets/cm3040/voltage-divider.png)
+
+You can work out the output voltage, <Latex formula='V_{out}' /> with the following equation:
+
+<Latex formula='V_{out} = V_{in} \cdot (\frac{R2}{R1+R2})' centered={true} />
+
+For the ESP8266 voltage divider:
+- it has 100k<Latex formula='\Omega' /> & 220k<Latex formula='\Omega' /> resistors
+- maximum 3.2V in analog A0 input pin
+- 10bit ADC (<Latex formula='2^{10} = ' />1024, <Latex formula='\therefore' /> 0 <Latex formula='\rarr' /> 1023 different values)
+
+<Latex formula='3.2V_{in} \cdot (\frac{100k \Omega}{220k \Omega + 100k \Omega}) \cdot 1024' centered={true} />
+
+##### Analog-to-Digital Converter (ADC)
+
+stats to bear in mind:
+- ESP8266: 0 -> 1023 (10 bit)
+- ESP32: 0 -> 4095 (12 bit)
+- ESP8266 takes approx. 135ms for ADC
+
+functions of the arduino ADC:
+- analogRead(pin)
+- analogWrite(pin, 0-1023)
+- digitalRead(pin)
+- digitalWrite(pin, 0-1)
+
+The values that we set for 10-bit resolution ESP8266 microcontroller between 0-1023 is known as pulse-width modulation (PWM)
+
+##### Pulse-Width Modulation (PWM)
+
+Pulse-width modulation is a method used for controlling voltage at each duty cycle.  
+This is particularly useful when we want to control the output of a component, which is directionally proportion to the output that we provide.  
+For example the brightness of an LED, or the speed of a motor, are directly proportional to the voltage provided to them.
+
+See diagrams below, <Latex formula='d_1' /> and <Latex formula='d_2' /> are duty-cycles:
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div style={'margin-right: 0.1em;'}>
+    ![voltage divider](../../../public/assets/cm3040/pwm-50.png)
+  </div>
+  <div style={'margin-left: 0.1em;'}>
+    ![voltage divider](../../../public/assets/cm3040/pwm-80.png)
+  </div>
+</div>
+
+LED brightness example:
+```c
+analogWrite(LED, 0); // 0%
+analogWrite(LED, 102); // 10%
+analogWrite(LED, 714); // 70%
+analogWrite(LED, 1023); // 100% (lecture video shows value as 1024 but surely 1023?)
+```
+
