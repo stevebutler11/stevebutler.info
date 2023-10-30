@@ -522,3 +522,125 @@ function mouseClicked() {
 }
 ```
 
+## Editing and processing digital audio - part 1
+
+### Audio editing in Audacity
+
+The first lecture video of the week covers how to:
+- zoom
+- cut/delete
+- trim
+- silence
+- split
+- move
+- copy and paste
+- envelope
+
+audio in Audacity.
+
+###### Click and pop removal
+
+read [this resource](https://manual.audacityteam.org/man/tutorial_click_and_pop_removal_techniques.html) on click and pop removal from audio.
+
+### Introduction to audio processing
+
+MYK generates a white noise signal for use in the demonstrations. This is due to the fact that white noise is a rich signal. It's got all possible frequencies within the band included, but randomly played at different times.  
+In the spectrum view in audacity, the white blobs correspond to power output, so the more white blobs the more power in the track. 
+
+##### Amplitude control
+
+This applies a scalar value to the amplitude values of the portion of the track selected, which in turn scales the amplitude of the track. Note that if you scale the track too high, clipping will occur.
+
+##### Normalisation
+
+Normalization in audio signals is slightly different from a statistical normalization. It's simpler. There are two phases to audio normalisation:
+
+1. analysis
+2. scaling
+
+Initially, the signal is analysed to find the peak, or the loudest sample in the whole signal. Then once the highest sample is found, the scaling value is calculated in accordance with a maximum amplitude value supplied, that avoids the occurrence of clipping. It's important to note that the signal gain is proportional across the entire track.
+
+###### Fading in and out
+
+The fade-in/out effect gradually increases/decreases the volume until it hits the maximum/minimum. The fade-in effect is essentially a function which iterates over the values in the selected range and applies an increasingly large scalar starting at zero.
+
+### A range of audio effects
+
+##### Filters
+
+Filters are very commonly used effects that carve out sections from the frequency spectrum.  
+Low-pass filters allow lower frequencies to pass, blocking higher frequencies.  A high-pass filter is the opposite. A notch filter cuts out a small section of the frequencies:
+
+![filters](../../../public/assets/cm3065/filters.png)
+
+A low-pass filter makes the sound seem more 'muffled', whereas a high-pass filter makes the sound seem 'tinnier'. A notch filter seems to 'hollow out' the sound.
+
+There is also a band-pass filter, which is a combination of a low-pass filter and a high-pass filter, and together they achieve the opposite of what a notch filter does, it that it allows only a certain band through, and blocks all above and below it.
+
+properties of filters:
+- cutoff or centre frequency (where the filter starts taking effect)
+- Q (controls how wide the notch is)
+
+##### Delays
+
+###### Echo
+
+An echo repeats the signal. An audacity you can set the delay time and the decay factor.
+
+###### Phasing
+
+Phasing overlays the signal on itself, but with a slight delay. The signal then interferes with itself to create the effect. 
+
+##### Dynamic range
+
+THe key idea is that there is a dynamic way of dealing with the amplitude of the signal. 
+
+###### Gate
+
+Gate blocks the signal when quiet. A way to remember is that if the signal is too quiet then a 'gate closes'. The main properties of gate are threshold and level reduction. Threshold is the level at which the effect is applied, and the level reduction is what the signal is reduced to if it is applied.
+
+###### Compression
+
+Some recordings fluctuate from low to high volume levels, and normalisation can't rectify the signal sufficiently. A dynamic range compression effect detects quiet segments and boosts their volume, while it leaves louder portions unaffected.  
+You can set a gain profile in Audacity to specify how the compression is applied:
+
+![compression profile](../../../public/assets/cm3065/compression-profile.png)
+
+##### Waveshaping and distortion
+
+Wave shaping is when you decide what to do based on the current value of the waveform. Distortion is a type of wave shaping that adds extra harmonics on top of the original signal:
+
+![distortion](../../../public/assets/cm3065/distortion.png)
+
+##### Spatialisation and reverberation
+
+Reverberation is concerned with simulating a particular acoustic space. Imagine a large hall, church or a cave, an how sound is effected by the environment. Reverberation tries to recreate those spaces in an artificial way. It's quite a sophisticated effect, and there's been many ways of implementing it over the years. The most advanced form of reverb used today is the convolution reverb.
+
+### Processing digital audio in p5.js: The p5.Effect class
+
+below is a snippet that applies a reverb effect to a sound in p5.js:
+
+```javascript
+let player;
+let reverb;
+
+function preload() {
+  player = loadSound('./path/to/sound.wav');
+  reverb = new p5.Reverb();
+}
+
+function setup() {
+  let canvas = createCanvas(200, 200);
+  background(0, 255, 0);
+  canvas.mousePressed(mousePressed);
+  // disconnect the unchanged signal from the audio output
+  player.disconnect();
+  // play the signal with the reverb effect applied
+  reverb.process(player, 2, 3);
+}
+
+function mousePressed() {
+  player.loop();
+}
+
+```
