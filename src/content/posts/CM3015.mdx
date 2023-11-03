@@ -281,3 +281,48 @@ A simple solution to solve this is to force the algorithm to be simpler, to _reg
 Finding the optimal split and feature combination is an np-complete problem. It's computationally intractable even for small datasets. The __CART__ algorithm described here uses _greedy training_. That is, it computes only the optimal split at each node and sequence, but doesn't consider the optimization of the tree as a whole. It often provides a good overall solution despite not being optimal.  
 A further advantage of decision trees over many other algorithms, including K-nearest neighbor, is that the algorithm can work on raw feature data without the need for data pre-processing. There's no need to scale or to center the data before-hand.  
 Decision trees are incredibly powerful algorithms and very flexible, and although we've covered them using classification, they can also be used for regression tasks. They're are also used as the base algorithm in one of the most powerful types of machine learning: Random Forests.
+
+### Week 4: Classification - part 2
+
+How can the performance of a classifier be measured?  
+One way is to measure the accuracy. That is, the percentage of correctly classified examples from the total number of samples. This however is not always a good measure of the quality of a classifier.  
+For example, if there are 99 samples from Class 1 and only one sample from Class 2, then, the classifier algorithm can simply output class one for _every instance_. It would achieve a 99% accuracy score, but it's completely missing all from Class 2. So we therefore need a more nuanced way of evaluating our classification algorithms. One such way is to use a confusion matrix.
+
+#### Confusion Matrix
+
+A confusion matrix is a matrix where each cell contains a number that represents a population of labels that belong to a specific combination of predicted and actual classes.  
+Given the results of a classifier, we can formulate the confusion matrix by simply filling in the cells corresponding to predictions and actual ground truth labels.  
+Consider the following example of a binary classifier:
+
+There are two possible outputs, <Latex formula="(Y \rarr \{0,1\})" />, tested on <Latex formula="N=10" /> data samples
+
+The correct 'ground truth' labels are:
+
+<Latex formula="Y^{GT}=[1,0,0,1,0,0,1,1,1,1]" centered={true} />
+
+The classifier predicted output was:
+
+<Latex formula="Y^P=[1,1,1,1,1,0,1,1,1,1]" centered={true} />
+
+![confusion matrix](../../../public/assets/cm3015/conf-matr.png)
+
+Let's look at a more formal aspect of the confusion matrix. Firstly, in a binary classification problem, we can consider each cell as corresponding to a positive and negative class. In the below example, a positive class represents the detection of a dog in an image. And the negative class represents that an image does not contain a dog.
+- True positives are test samples that have been correctly identified as a dog
+- True negatives have been correctly identified as not a dog
+- False positives represent samples that were incorrectly identified as a dog
+- False negative samples for those that were incorrectly identified as not being a dog
+
+![confusion matrix formal](../../../public/assets/cm3015/conf-matr-formal.png)
+
+Often it's better to use multiple measures of performance as opposed to just accuracy. Two typical measures that are often used together are <mark>recall</mark> and <mark>precision</mark>.
+
+Given an actual positive example, __recall__ expresses how likely it is that a classifier will predict the _correct_ value i.e. likely is it that a positive example will be correctly recalled. The formula for this is shown below in terms of true positives over true positives plus false negative.
+
+Now, given a positive prediction by the classifier, __precision__ estimates how likely it is the _prediction will be correct_ i.e. how precise the positive predictions are. Again, the formula for this using true positives and false positives is shown below.
+
+![recall and precision](../../../public/assets/cm3015/recall-precision.png)
+
+Know that for some applications, it may be beneficial to optimize the performance with respect to false positives.  
+For example, in security applications that use face recognition, it may be safer to fail to identify someone who should have access i.e. get a false negative, than get a false positive and wrongly allow access to a prohibited person.
+
+This week there was a lab on knn and decision trees, recap via coursera
