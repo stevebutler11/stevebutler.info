@@ -686,3 +686,50 @@ The results of the loss function are then fed back into the neural network via b
 grads = tape.gradient(loss, model.trainable_variables)
 optimizer.apply_gradients(zip(grads, model.trainable_variables))
 ```
+
+### Week 5: State of the art and ethics in AI game players
+
+#### State of the art game players
+
+_What happened after the Atart 2015 paper by deepmind?_
+
+A number of improvements were made and released, including:
+- [doubleDQN](https://ojs.aaai.org/index.php/AAAI/article/view/11796)
+- [DreamerV2](https://arxiv.org/abs/2010.02193)
+- [R2D2](https://iclr.cc/Conferences/2019/Schedule?showEvent=648)
+- [Agent57](https://arxiv.org/abs/2003.13350)
+
+the latter achieving super-human performance across all 57 atari games.
+
+DeepMind have since released AlphaStar, which is an AI capable of playing the game StarCraft and StartCraft 2. These games are considerably more complex than the boardgame go for which DeepMind has already solved.
+
+OpenAI have released OpenAI Five, which is a game playing AI for the game DOTA. It has beaten professional players, and a website was set up to give the public the ability to compete against it. OpenAI Five won 7215 times and lost only 42 times.
+
+#### Ethics of game playing AI
+
+An extreme view of fairness in game playing is quoted below:
+
+> “a completely fair competition can only be achieved against an artificial system that is essentially equivalent to a flesh and blood human”  
+> __M. Canaan, C. Salge, J. Togelius, and A. Nealen. Leveling the playing field-fairness in ai versus human game benchmarks. arXiv preprint arXiv:1903.07008, 2019.__
+
+In the paper they come up with six dimensions of fairness to consider for competition:
+1. Perceptual: do the two competitors use the same input space?
+2. Motoric: do the two competitors use the same output space?
+3. Historic: did the two systems spend the same amount of time on training?
+4. Knowledge: do the two systems have the same access to declarative knowledge about the game?
+5. Compute: do the two systems have the same computational power?
+6. Common-sense: do the agents have the same knowledge about other things?
+
+A more moderate view can be found in the 2019 paper [When are we done with games?]()
+
+> “Through the discussion of two areas (the competitors perceptual and motoric abilities; and the game’s extrinsic and intrinsic factors) we hope to show that, so far, no fair competition between AIs and human has occurred in Dota 2 and StarCraft II … We thus conclude that we are not done with games.”  
+> __When Are We Done with Games? 2019__
+
+In the DeepMind documentary on AlphaGo, on the one hand the commentator says:
+
+> “The lessons that alphago is teaching us are going to influence how go is played for the next 1000 years"
+
+meaning the game playing AI has lled to new discoveries, and uncovered novel ways to play the game. In the other hand, the top player Lee Sedol has since retired from the sport, citing:
+
+> "I'm not at the top even if I become the number one."
+
