@@ -585,3 +585,133 @@ void setBuzzerStatus(){
   }
 }
 ```
+
+### Week 5: Multimodal sensors and commercial IoT devices
+
+#### Introduction to multimodal sensors and approaches
+
+A smart environment is created using heterogeneous sensing devices. These devices can be generally categorized as vision or sensor based methods. Vision based sensing methods involve analyzing images sequentially to detect and track objects of interest. In the sensor based approach, sensors are either:
+- distributed within the ambient environment 
+- embedded into the objects (aka dense sensing)
+- worn or implanted in/on our body
+
+##### vision-based
+
+Vision-based sensing methods involve processing camera images sequentially to detect and track objects. They have been extensively used in areas such as:
+- facial expression recognition
+- hand gesture detection
+- body position and movement detection
+- surveillance in indoor and outdoor environments 
+
+The common steps for image processing involves pre-processing images, fragmenting those images, and performing algorithms for feature extractions and movement detection.
+
+There are several image processing algorithms available, such as:
+- Scale Invariant Feature Transformation (SIFT)
+- Speed-Up Robust Feature (SURF)
+- Features from Accelerated Segment Test (FAST)
+- Histogram of Oriented Gradients (HOG)
+- Histogram of Optical Flow Gaussian filter
+- motion boundaries ...
+
+The key point to take away from these different algorithms is that higher the accuracy that we need and more features that we want to detect, the longer the computation time will be
+
+##### sensor-based
+
+A sensor-based approach can be preferred to a vision-based approach, as there are fewer privacy and ethical issues to consider. 
+
+###### Ambient sensors
+
+Ambient sensing involves deploying sensors around the environment, usually on walls, doors, windows, large furniture etc. to detect events such as motion, sound, and climate e.g. temperature. The data collected from the ambient environment is usually used to perform time-series analysis to detect any anomalies in usual patterns.
+
+###### Dense (embedded) sensors
+
+Dense (embedded) sensing involves embedding sensors into everyday objects to capture the user's interactions with them. These everyday objects can be a perishable object, could be portable or fixed in one location. Examples include mugs, kettles, toasters, fridges etc.
+
+A short list of dense sensor types than can be used for sensing can be seen below:
+- capacitive touch
+- tilt sensor
+- accelerometer
+- gyroscope
+- force
+- pressure
+- liquid level (FDC1004)
+- weight scale (load cell)
+- temp/humidity (DHT11/12)
+- RFID tags
+
+##### Worn sensors
+
+Wearable sensors can be split into two categories:
+
+body-worn:
+- watches
+- glasses...
+
+implants:
+- rfid chips
+- lenses
+- diabetes and heart monitoring
+
+##### Sensing vendors
+
+off the shelf:
+- pre-developed/tested
+- proprietary or open source
+
+proprietary:
+- patented software/circuits
+- pricing models
+
+open source:
+- flexibly integrate, extract and process data
+- lower cost/ higher knowledge
+
+#### Common physical sensors - ambient and dense
+
+##### Temperature sensors
+
+Temperature sensor types:
+- thermocouples
+- thermistors (limited range)
+- resistor temperature detector (RTD)
+- Infrared temperature sensors (non-contacting)
+- thermometers
+
+These temperature sensors have varied reading ranges and accuracy levels. They can be contact-based or non-contact-based sensors.
+
+##### Distance sensors
+
+###### IR distance
+
+The infrared proximity sensor has an infrared LED and position-sensitive infrared detector (PSD).  
+The infrared LED emits the light beam and the PSD captures the reflected light returned from an object and the distance triangulated taking in to account time taken and angle. The range is approximately 10-80cm.
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![IR distance](../../../public/assets/cm3040/ir-distance.png)
+  </div>
+</div>
+
+###### Ultrasonic HC-SR04
+
+An ultrasonic sensor triggers a sound wave, and receives the sound echoed from the surface of the object. The duration between the triggering and receiving the echo is calculated:
+
+<Latex formula="distance = \frac{(duration \times speed \space of \space  sound)}{2}" centered={true} />
+
+The range is approximately 2-400cm
+
+###### Light based Detection And Range (LiDAR)
+
+These types of sensors use triangulation and pulse methods to obtain a highly accurate distance reading of an environment and even create point clouds for detailed modeling.  
+LiDAR sensors are generally more expensive than the other distance sensors and can be harmful to human eyes.
+
+##### Inertial Measurement Units (IMUs)
+
+A typical IMU consists of an:
+- accelerometer
+- gyroscope
+- magnetometer
+
+These measure the linear acceleration, angular velocity, and magnetic field strength to orient w.r.t the Earth's axis, respectively.  
+IMUs with six Degrees of Freedom (6 DoF) contain only the accelerometer and gyroscope, with three axis each. nine Degrees of Freedom (9 DoF) IMUs can be achieved by adding the magnetometer.
+
+IMUs by themselves are prone to errors, or drifts in the measurements over time. Therefore, the sensor data is usually calibrated, filtered, and combined using algorithms such as a Kalman Filter. Alternatively, average readings of multiple IMUs sensors are used to improve the accuracy of the measurements.
