@@ -644,3 +644,314 @@ function mousePressed() {
 }
 
 ```
+
+## Editing and processing digital audio - part 2
+
+### Filtering, and an implementation of an averaging low-pass filter
+
+Signal averaging is a signal processing technique that tries to remove unwanted random disturbances from a signal through the process of averaging.  
+Averaging often takes the form of summing a series of signal samples and then dividing that sum by the number of individual samples.  
+The following equation represents an N-point moving average filter, with input array `x` and output averaged array `y`:
+
+<Latex formula="y(N) = \frac{1}{N} \cdot \displaystyle \sum_{k=0}^{N-1} x_{N-k}" centered={true} />
+
+Let's see an example. Let's apply a 3-point moving average filter example. In this example, the input is the array `values` and the averaged output the array `averages`:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+values = np.array([3., 9., 3., 4., 5., 2., 1., 7., 9., 1., 3., 5., 4., 9., 0., 4., 2., 8., 9., 7.])
+N = 3
+
+averages = np.empty(20)
+for i in range(1, 19):
+    temp = (values[i-1]+values[i]+values[i+1])/N
+    averages[i] = temp
+
+# Preserve the edge values
+averages[0] = values[0]
+averages[19] = values[19]  
+
+plt.plot(values, 'b-', label='values')
+plt.plot(averages, 'r--', label='averages')
+plt.legend(loc="upper left")
+```
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    ![moving average](../../../public/assets/cm3065/moving-avg.png)
+  </div>
+</div>
+
+We can also use __numpy.convolve__ or __scipy.ndimage.uniform_filter1d__ to implement the moving average filter.
+
+This is an example using __numpy.convolve__:
+
+```python
+window = np.ones(3)
+window /= sum(window)
+
+averages = np.convolve(values, window, mode='same')
+plt.plot(values, 'b-', label='values')
+plt.plot(averages, 'r--', label='averages')
+plt.legend(loc="upper left")
+```
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    ![moving average](../../../public/assets/cm3065/moving-avg-conv.png)
+  </div>
+</div>
+
+This is an example using __scipy.ndimage.uniform_filter1d__:
+
+```python
+from scipy.ndimage.filters import uniform_filter1d
+
+averages = uniform_filter1d(values, size=3)
+plt.plot(values, 'b-', label='values')
+plt.plot(averages, 'r--', label='averages')
+plt.legend(loc="upper left")
+```
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    ![moving average](../../../public/assets/cm3065/moving-avg-1d-filt.png)
+  </div>
+</div>
+
+
+notice the start and finish values are averaged differently with the different methods.
+
+#### Implementation of an averaging low-pass filter
+
+In signal processing, the moving average filter can be used as a simple low-pass filter. The moving average filter smooths out a signal, removing the high frequency components from it, and this is what a low-pass filter does.  
+In this example, we are going to apply a low-pass filter (a 15-point moving average filter) to a square wave:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from thinkdsp import SquareSignal, Wave
+
+# Suppress scientific notation for small numbers
+np.set_printoptions(precision=3, suppress=True)
+
+# make a square signal wave
+signal = SquareSignal(freq=440)
+wave = signal.make_wave(duration=1.0, framerate=48000)
+
+# make a moving average window
+window = np.ones(15)
+window /= sum(window)
+
+# apply the window to the signal using np.convolve
+averages = np.convolve(wave.ys, window, mode='same')
+smooth = Wave(averages, framerate=wave.framerate)
+
+# plot both
+plt.plot(wave.ys[:500],'b-', label='original')
+plt.plot(smooth.ys[:500], 'r--', label='filtered')
+plt.xlabel('Samples')
+plt.legend(loc="upper left")
+```
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    ![moving average](../../../public/assets/cm3065/smoothed-wave.png)
+  </div>
+</div>
+
+below is the jupyter notebook from the lab:  
+<mark>N.B. turn speakers down before playing sound!</mark>
+
+<iframe
+  src="/assets/cm3065/filtering.html"
+  width="100%"
+  style={{height: '70vh'}}
+></iframe>
+
+### FIR (Finite Impulse Response) filters
+
+In signal processing, a finite impulse response (FIR) filter is a filter whose impulse response (or response to any finite length input) is of finite duration, because it settles to zero in finite time.
+
+For a general N-tap FIR filter, the nth output is:
+
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    <Latex formula="y(N) = \displaystyle \sum_{k=0}^{N-1} h(k) \cdot x_{N-k}"  />
+  </div>
+  <div>
+    <Latex formula="h(k) = \frac{1}{k}, 0 \le k \lt N" />
+  </div>
+</div>
+
+example below:
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from thinkdsp import SquareSignal, Wave, decorate
+from thinkdsp import read_wave
+
+# the wave to filter
+my_sound = read_wave('../Audio/429671__violinsimma__violin-carnatic-phrase-am.wav')
+my_sound.make_audio()
+
+# make a 5-tap FIR filter using the following coefficients: 0.1, 0.2, 0.2, 0.2, 0.1
+window = np.array([0.1, 0.2, 0.2, 0.2, 0.1])
+
+# apply the window to the signal using np.convolve
+filtered = np.convolve(my_sound.ys, window, mode='same')
+filtered_violin = Wave(filtered, framerate=my_sound.framerate)
+filtered_violin.make_audio()
+```
+
+### LTI (Linear Time Invariant) systems
+
+#### What is a signal?
+- a list of numbers
+- for audio signals, this represents the amplitude sampled over time
+
+#### What is a system?
+- something used to process signals
+- if it happens to be a linear time invariant system, we can represent its behaviour as a list of numbers known as an __IMPULSE RESPONSE__
+- given an impulse response, we can easily process any signal with that system using __convolution__
+
+#### characteristics of LTI systems
+
+Linear systems have very specific characteristics which enable us to do the convolution:
+1. homogeneity
+2. additivity
+3. shift invariance
+
+##### Homogeneity
+
+Homogeneity means 'linear with respect to scale'.  
+It is demonstrated in the jupyter notebook below that two signals, both the same signals but one is scaled by a a factor of 0.5, produce the same outputs but one is scaled by a factor of 0.5.
+
+##### Additivity
+
+Additivity means you can separately process simple signals and add the results together.  
+For example, you could decompose a signal into four separate sections. If you pass each of those through the system one at a time, then you'd get four outputs which if all added together would return the final output, which would be the result of the undecomposed signal coming through the whole system. So it means you can arrive at the same results even if you process the signal in its individual components.  
+This is a very important property for convolution
+
+Again this is shown in the notebook below.
+
+##### Shift Invariance
+
+Shift invariance means later signal -> later response.  
+Again this is shown in the notebook below.
+
+### Convolution by hand
+
+steps to convolve by hand:
+
+1. decompose (additivity)
+2. scale (homogeneity)
+3. shift (shift invariance)
+4. synthesise (addition)
+
+##### decompose
+
+imagine a signal:
+
+```
+sig = [1.0, 0.5, 1.0]
+
+```
+
+you can decompose it into three parts:
+
+```
+a = [1.0, 0.0, 0.0]
+b = [0.0, 0.5, 0.0]
+c = [0.0, 0.0, 1.0]
+
+```
+
+##### scale
+
+using a system, you can now scale the decomposed constituents:
+
+```
+sig = [1.0, 0.5, 1.0]
+sys = [0.0, 0.5, 0.25]
+
+a = [1.0, 0.0, 0.0]
+a_output = [0.0, 0.5, 0.25]
+
+b = [0.0, 0.5, 0.0]
+b_output = [0.0, 0.25, 0.125]
+
+c = [0.0, 0.0, 1.0]
+c_output = [0.0, 0.5, 0.25]
+
+```
+
+##### shift
+
+because of the positions of the scalars in the system, the outputs need to be shifter in accordance:
+
+```
+sig = [1.0, 0.5, 1.0]
+sys = [0.0, 0.5, 0.25]
+
+a = [1.0, 0.0, 0.0]
+a_output = [0.0, 0.5, 0.25]
+
+b = [0.0, 0.5, 0.0]
+b_output = [0.0, 0.0, 0.25, 0.125]
+
+c = [0.0, 0.0, 1.0]
+c_output = [0.0, 0.0, 0.0, 0.5, 0.25]
+
+```
+
+##### synthesise
+
+the constituents can now be added back together:
+
+```
+a_output = [0.0, 0.5, 0.25]
+b_output = [0.0, 0.0, 0.25, 0.125]
+c_output = [0.0, 0.0, 0.0,  0.5,  0.25]
+
+output = [0.0, 0.5, 0.5, 0.625, 0.25]
+```
+
+### Convolution in python
+
+Below is an implementation of convolution in python, though note that this is far to slow in real life as the computational complexity is too high: 
+
+```python
+def convolve(signal, system):
+    res = np.zeros(len(signal) + len(system) - 1)
+    for sample_ind in range(len(signal)):
+        sample = signal[sample_ind]
+        for system_ind in range(len(system)):
+            output = sample * system[system_ind]
+            res_ind = sample_ind + system_ind
+            res[res_ind] = res[res_ind] + output
+    return res
+```
+
+The below notebook shows an example of applying a convolution to MYK's voice recording using an impulse response taken from a recording of a clap being played in St. Alban's. This gives the effect that he's actually in St. Alban's
+
+### LTI and convolution jupyter notebook
+
+<iframe
+  src="/assets/cm3065/LTI-systems-2.html"
+  width="100%"
+  style={{height: '70vh'}}
+></iframe>
+
+### Lab exercises jupyter notebook
+
+<iframe
+  src="/assets/cm3065/ex7.html"
+  width="100%"
+  style={{height: '70vh'}}
+></iframe>
+
