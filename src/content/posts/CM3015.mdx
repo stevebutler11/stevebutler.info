@@ -326,3 +326,86 @@ Know that for some applications, it may be beneficial to optimize the performanc
 For example, in security applications that use face recognition, it may be safer to fail to identify someone who should have access i.e. get a false negative, than get a false positive and wrongly allow access to a prohibited person.
 
 This week there was a lab on knn and decision trees, recap via coursera
+
+### Week 5: Regression
+
+#### Introduction to linear regression
+
+This topic covers an extremely powerful supervised learning technique called linear regression. As mentioned in previous topics, regression is where we build models that aim to predict continuous values from data.  
+Linear regression is a simple technique for fitting that data using linear equations. Given a set of data, you can imagine drawing a line in a possibly high-dimensional space that best represents the data labels with respect to its inputs. To optimize a linear regression model on some data, we introduce a first order optimization method called gradient descent.  
+This is a commonly employed iterative technique for finding the best linear model parameters to fit a given data set. We'll discuss other topics such as how to scale features before applying multivariate linear regression, and how to detect convergence automatically in iterative algorithms.
+
+Take the below example:
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![linear regression graph](../../../public/assets/cm3020/lin-reg-graph.png)
+  </div>
+</div>
+
+The linear regression (red line) is defined by two parameters, <Latex formula="\theta_0" /> and <Latex formula="\theta_1" />.
+
+<Latex formula="\theta_0" /> is the __intercept__ and <Latex formula="\theta_1" /> is the __gradient__.
+
+it can be expressed mathematically as hypothesis function: 
+
+<Latex formula="h_{\theta}(x) = \theta_0 + \theta_1 x_1" centered={true} />
+
+it can also be expressed as a summation: 
+
+<Latex formula="= \displaystyle \sum_{j=0}^{1} \theta_j x_j" centered ={true} />
+
+with <Latex formula="x_0 = 1" />. This is handy as it is more generalised (see later). 
+
+It can also be expressed in vector form:
+
+<Latex formula="= [ 1 \space x ] \begin{bmatrix} \theta_0 \\ \theta_1 \end{bmatrix}" centered ={true} />
+
+Lets look at a concrete example. Take a look at the following data:
+
+![flight co2 table](../../../public/assets/cm3020/flight-co2-table.png)
+
+Whenever you've got a dataset of values like this in machine learning, it's helpful to plot it. If you can plot it, you can see visually if there's any relationships between the variables we're interested in.
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![co2 graphed](../../../public/assets/cm3020/co2-graphed.png)
+  </div>
+</div>
+
+It can be seen that there is with each of these data points, a linear relationship. So that gives us hope that we could maybe model this relationship with a line with a linear equation. So lets set out our hypothesis, <Latex formula="h_{\theta}(x) = \theta_0 + \theta_1 x_1" />, and the goal now is to find the line that best fits that data.  
+One approach to try this is to start with a random line, and measure the distance between that line and the data:
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![co2 mean squared error](../../../public/assets/cm3020/co2-mse.png)
+  </div>
+</div>
+
+What we're trying to measure here is the __error__ or the __loss__. There are different ways of expressing this particular loss, but in this instance we're using "L2 loss", sometimes called the "least squared loss" or the "mean squared error":
+
+<Latex formula="J(\theta) = \frac{1}{2m} \displaystyle \sum_{i=1}^{m} (h_\theta (x^{(i)})-y^{(i)})^2" centered ={true} />
+
+The goal is to move that line closer to the data. The error, or loss should be smaller. Move it again and the losses even smaller. And then we find something that seems to fit the data nicely, and that should have the __least error__, the __least amount of loss__.  
+This loss function is a very powerful way of being able to measure the distance between what our algorithm or hypothesis is saying, and what the actual data is.  
+N.B. The algorithm for "moving the line" will be covered soon.
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![co2 mse reducing](../../../public/assets/cm3020/co2-mse-reduced.png)
+  </div>
+</div>
+
+#### Linear regression jupyter notebook
+
+<iframe
+  src="/assets/cm3015/lin-reg.html"
+  width="100%"
+  style={{height: '70vh'}}
+></iframe>
+
+#### further reading
+
+These links will be helpful:
+- [linear algebra cheatsheet](https://ml-cheatsheet.readthedocs.io/en/latest/linear_algebra.html)
+- [Deep Learning book linear algebra section](https://www.deeplearningbook.org/contents/linear_algebra.html)
