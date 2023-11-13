@@ -955,3 +955,92 @@ The below notebook shows an example of applying a convolution to MYK's voice rec
   style={{height: '70vh'}}
 ></iframe>
 
+## Week 5: Frequency domain representations - part 1
+
+### Review of spectral analysis
+
+_What's wrong with the time domain?_
+
+Nothing really for the most part, but the problem lies in the inability to look at something like the time-domain view below:
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    ![time domain plot](../../../public/assets/cm3065/time-domain.png)
+  </div>
+</div>
+
+What can you decipher about the sound from this? You can see that it's going to be loud at the beginning, and that it tails off a bit towards the end, but other than that not too much. You can't decipher the pitch for instance. This is where spectral analysis comes in. See below a 2D spectral analysis in Audacity of part of a track:
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    ![spectral analysis](../../../public/assets/cm3065/spect-anal.png)
+  </div>
+</div>
+
+On the y-axis is power, and the x-axis is frequency. From this you can glean that there is more power in the lower frequencies of the track.  
+The problem with a 2D view is that you can't see how these frequencies change over time. This makes way for 3D spectrograms:
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    ![3D spectrum](../../../public/assets/cm3065/3D-spect.png)
+  </div>
+</div>
+
+In this instance, the x-axis is time, the y-axis is frequency, and colour denotes the power. The lighter colour above corresponds to higher power. The genre of the track is techno, and you can see the repeating drum and cymbal pattern from the 3D plot. 
+
+#### Bins and windows
+
+Bins represent a single frequency typically, or a small range of frequencies. A window is a snapshot of frequencies at a moment in time. So a snapshot displays different frequency bins at a moment in time.
+
+
+
+### Spectral plots and periodic signals
+
+The notebook below runs through what has just been covered above re: spectral analysis, but also covers periodic signals.  
+
+##### sine wave
+- one strong, clear band in the frequency spectrum
+
+##### sawtooth wave
+- much busier frequency spectrum
+- strong bands at the base frequency, and multiples of that frequency (these are called harmonics)
+- buzzing sound, much more stimulating to the ear. This makes sense as the frequency spectrum is much busier than the sinusoidal one
+
+##### square (pulse) wave
+- strong bands at the base frequency, and multiples of that frequency, but not as many harmonics as the sawtooth wave
+- harmonics are more spaced out than sawtooth
+- sound is likened to a 'hollow' sound
+
+##### multiple sine waves added
+- as can be seen, adding multiple sine waves of different frequencies together results in a different wave form
+- the frequency spectrum of this resembles (also sounds like) a sawtooth spectrum
+- this means 
+  - you can build sawtooth waves from sine waves
+  - the spectrum tells us which sine waves we need to build a signal
+
+
+#### Fourier decomposition
+
+Fourier decomposition is a formalisation of the process of figuring out how to make a given signal out of a set of sine waves:
+
+<Latex formula="s_N(x) = \frac{a_0}{2} + \displaystyle \sum_{n=1}^{N}(a_n \cdot cos(\frac{2 \pi}{P}nx) + b_n \cdot sin(\frac{2 \pi}{P}nx))" centered={true} />
+
+but more on this later.
+
+### Spectral plots and periodic signals jupyter notebook
+
+<iframe
+  src="/assets/cm3065/spps.html"
+  width="100%"
+  style={{height: '70vh'}}
+></iframe>
+
+### Signal analysis with the DCT
+
+Watch MYK's DCT video, where he runs through the below notebook with explanations:
+
+<iframe
+  src="/assets/cm3065/dct.html"
+  width="100%"
+  style={{height: '70vh'}}
+></iframe>
