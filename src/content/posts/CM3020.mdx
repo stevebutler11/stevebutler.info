@@ -126,11 +126,9 @@ These are the key elements of a reinforcement learning algorithm
 
 ### Week 2: Reinforcement learning and DQN agents
 
-[week 2 slides](https://d3c33hcgiwev3.cloudfront.net/pOwpiMA_S2usKYjAP6trnA_b197a6de118644d19f31be9557fd10e1_ai-game-player-wk2.pdf?Expires=1698105600&Signature=E81mamWXdceYZY0Wv2LAOyn6hbQ1snO6vrA-MuijBU99GTtmLxQ3ZqVhAtbSM-YFqpOv4Fl3ictZK4-LsdraHOLSQ3fp22cnf8LPS4mrLFY4nslPeVWPh-bm-2~5elDTvcR6fls6RGPOJ8L0os2RCaZ0v6y7973Y5Yz2rDxVMpY_&Key-Pair-Id=APKAJLTNE6QMUY6HBC5A)
-
 #### Formalising the problem
 
-How can we create an AI that can play games? Most games involve an iterated process of observing and acting. Most games involve some sort of positive or negative result. Think of an arcade game:
+How can we create an AI that can play games? Most games involve an iterative process of observing and acting. Most games involve some sort of positive or negative result. Think of an arcade game:
 
 - what are the observations?
 - what are the vailable actions?
@@ -150,10 +148,9 @@ The player observes the next state <Latex formula="s'" />
 
 <Latex formula="s,a \rarr s'" centered={true} />
 This is stochastic, so we can add probability <Latex formula="P" /> to the transition:
-<Latex formula="P(s'|a,s)" centered={true} />> The reason it is stochastic is that
-the ball can be moving in any direction, and a snapshot of the screen (state) does
-not indicate which direction the ball is moving. You can read the above expression
-as '_probability of state prime, given state and action_'
+<Latex formula="P(s'|a,s)" centered={true} />
+
+The reason it is stochastic is that the ball can be moving in any direction, and a snapshot of the screen (state) does not indicate which direction the ball is moving. You can read the above expression as '_probability of state prime, given state and action_'
 
 ##### rewards
 
@@ -732,4 +729,173 @@ In the DeepMind documentary on AlphaGo, on the one hand the commentator says:
 meaning the game playing AI has lled to new discoveries, and uncovered novel ways to play the game. In the other hand, the top player Lee Sedol has since retired from the sport, citing:
 
 > "I'm not at the top even if I become the number one."
+
+## Evolving creature
+
+### Week 6: Automatic design using genetic algorithms
+
+This topic focuses on genetic algorithms. Genetic algorithms are a branch of bio-inspired computing, which is a branch of artificial intelligence.  
+We'll use genetic algorithms to design robotic forms, re-implementing a famous research paper by Karl Sims.
+
+This case study is organised into five weeks of content:  
+Week 6: Introduction to automatic design using genetic algorithms  
+Week 7: Building robots using pybullet and URDF files  
+Week 8: Genetic encoding scheme  
+Week 9: Simulation and fitness function  
+Week 10: State of the art in evolutionary computing  
+
+#### Bio-inspired computing
+
+What does bio-inspired mean?
+
+> Looking at the algorithms and functions in the natural world and thinking there must be something we can use computationally here...
+
+Brief overview of bio-inspired computing:
+
+__1950s__: Cybernetics  
+__1960s__: Connectionism (yes neural networks)  
+__1970s__: Genetic algorithms  
+__1980s__: Artificial life  
+__1990s__: Onwards and upwards!  
+
+##### Cybernetics
+
+> “the science of control and communication, in the animal and the machine”  
+> __Norbert Weiner 1948__
+
+The word cybernetics is derived from the greek word for steersman.  
+It's focus is control and communication, and not so much about form. It's not really about studying what's out there in nature, what it looks like, what color it is, how many legs it's got etc. It's much more about how it _works_, how it _functions_, how it _controls itself_, and how the different entities might communicate with each other or different parts of an entity might effectively communicate with each other.
+
+> “Co-ordination, regulation and control will be its themes, for these are of the greatest biological and practical interest”  
+> __Ross Ashby 1961__
+
+There is a nice article regarding british cybereticism: "Cybernetics and the mangle: Ashby, Beer and Pask." Social studies of science 32.3 (2002): 413-437.
+
+##### Connectionism
+
+> “The perceptron is a minimally constrained "nerve net" consisting of logically simplified neural elements, which has been shown to be capable of learning to discriminate and to recognize perceptual patterns”  
+> __F. Rosenblatt, "Perceptron Simulation Experiments," Proceedings of the IRE, vol.48, no.3, pp.301-309, March 1960__
+
+Rosenblatt is credited with inventing the perceptron.  
+This is the birth neural networks, which has led to deep neural networks and the recent boom in AI. 
+
+##### Artificial life
+
+In the 1980s, Chris Langton set up the Artificial Life conference.  
+Artificial life is concerned with the simulation of evolution, bio-primordial chemistry, completely artificial complex systems and more.
+
+#### evolution theory crash course
+
+We will be looking at a particular field of bio-inspired computing called genetic algorithms. They are inspired by evolution theory an so it pays dividends to have an understanding of this.
+
+Darwinian theory posits that a population has __variety__ and __heredity__. The population undergoes sorts of tests (__selection__) and the survivors of selection go on to reproduce and pass on their characteristics.
+
+> __Genotype__  
+> The genotype encodes the range of characteristics of the individual
+
+> __Phenotype__  
+> The phenotype is the actual individual that manifests in the world
+
+DNA = Nature
+
+Environment = Nurture, defining where in these ranges the characteristics actually fall
+
+The DNA code has 4 distinct letters. A, C, G and T. DNA strands are combinations of these letters strung together. Above that, we have three letter codons. Each three letter codon in the string maps to an amino acid (there are 21 different amino acids).  
+Proteins are made of amino acid sequences folded into 3D shapes. They way the DNA is oriented in space (the way it folds) is based on the permutation of amino acids and their interaction with each other (e.g. electrostatic properties). Proteins make up an organism's core structure and function. They also can control the DNA expression pattern.
+
+__NB: watch the evolution theory crash course video by MYK as the notes above are are based on that, but tough to explain__
+
+also, [this](https://www-users.york.ac.uk/~gt3/Lectures/images/YCS-2008-425.pdf) is a good primer on evolution for computer scientists
+
+#### Artificial evolution and genetic algorithms
+
+John Holland (Uni. Michigan) invented the idea of genetic algorithms in the 1960s. Genetic algorithms are:
+
+> probabilistic search procedures designed to work on large spaces involving state that can be represented by strings  
+> __Goldberg, David E., and John H. Holland. "Genetic Algorithms and Machine Learning." Machine Learning 3.2-3 (1988): 95-99__
+
+but how does this relate to evolution theory?
+
+probabilistic search = _selection_  
+states = _phenotypes_  
+strings = _genotypes_  
+
+We define space as the space of possible solutions to a problem. So if we can search the space, we can find a solution to a problem. Examples of problems include:
+- What is the ideal shape for an aeroplane wing?
+- What are the ideal settings for this data centre to reduce power consumption?
+- What is the most efficient robot form for walking?
+
+moving forward, we'll use the first example of an aeroplane wing
+
+##### encoding: genotypes
+
+we need to encode the ‘solutions’ or ‘states’ somehow, normally as a string of numbers or bits. This is the genetic encoding. It is similar to how DNA encodes proteins.  
+The encoding provides a manipulable representation of the solution. A possible solution is seen below:
+
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; ">
+  <img src="../../../public/assets/cm3020/encoding.png" />
+</div>
+
+Once we have our encoding, we need to decode it to see how ‘good’ this solution is. Depending on the problem, we might then need to run the decoded solution in simulation to see how good it is, or run some other tests against them.  
+In the aeroplane example, this might involve using a physics simulation to calculate the lift of each wing, and give the wings with higher lift values better scores.  
+This is the _fitness function_.
+
+The next step is to make the next generation. Much like evolution, genetic algorithms are iterative processes, and so parents need to be selected. There are different ways to select, two examples of which are:
+
+Roulette wheel:
+- the large the fitness function score, the greater the size of segment on the roulette wheel
+- the greater the wheel size, the greater chance of breeding
+
+Tournament selection:
+- each solution is compared to each other solution and the fittest gets to breed
+
+Once the sets of parents are selected, they need to be combined in some way.  
+The typical breeding process involves _crossover_ and _mutation_.  
+Crossover involves taking part of one parent, part of the other, and combining them. This can be done in different ways e.g. one-point crossover, multi-point crossover.
+
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; ">
+  <img src="../../../public/assets/cm3020/crossover.png" />
+</div>
+
+Mutation involves randomly choosing places on the encoding an flipping the bits:
+
+<div style="display: flex; flex-direction: row; justify-content: center; align-items: center; ">
+  <img src="../../../public/assets/cm3020/mutation.png" />
+</div>
+
+This whole process is repeated many times, until we are left with a population of really good solutions for aeroplane wings. 
+
+#### Why genetic algorithms work
+
+##### local and global maximum
+
+A local maximum denotes a point in the search space where a solution seems optimal within a limited neighborhood but may not be the best globally. This scenario can trap the algorithm in suboptimal solutions.  
+On the other hand, a global maximum represents the ultimate best solution across the entire search space. Striking a balance between exploration (diverse search) and exploitation (focused refinement) strategies is essential to prevent algorithms from converging prematurely to local maxima, thereby enhancing the chances of discovering the true global maximum for a given problem.  
+Genetic algorithms aim to solve this problem.
+
+##### hyperplane sampling
+
+In a nutshell, hyperplane sampling is breaking a solution into components to test those components in multiple combinations with other components.
+
+__Schema theorem__
+
+Schemas are patterns, like a simple regular expression. An example of a schema for a space of binary strings:  
+1**0 : all 4 bit strings that start with a 1 and end with a 0, e.g. 1000, 1110 etc.  
+The hyperplane _covers the set of coordinates matching the schema_. So schema theorem is used in conjunction with hyperplane sampling to create 'hyperplanes' to break apart solutions and test them.
+
+Let's say we are evolving designs for a drone propeller/rotor setup. The first part of the genetic encoding might represent the cross section of the blade, and the rest defines how many rotors there are, how big they are, etc. Say we have a schema like: 100100********... -> this defines a hyperplane of rotors with a certain cross section but with anything for the other characteristics of the rotor. So by exploring that hyperplane we test out that particular cross section with all other possible options for the design.
+
+##### implicit parallelism
+
+In a nutshell, using a population model to maintain, optimise and even recombine multiple solutions at the same time.
+
+The genetic algorithm has a population model. This means that multiple ‘blood lines’ might exist in the population. This is what is meant by parallelism – we are not just optimising a single solution, we are optimising multiple solutions simultaneously.
+
+##### computational parallelism
+
+It's worth noting that genetic algorithms lend themselves to being computed in parallel, e.g. assessing multiple solutions at the same time on a multi-processor system.
+
+#### Karl Sims creatures
+
+Watch MYK's video on Karl Sims creatures for an overview of how he used genetic algorithms
 
