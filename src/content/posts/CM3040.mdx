@@ -715,3 +715,89 @@ These measure the linear acceleration, angular velocity, and magnetic field stre
 IMUs with six Degrees of Freedom (6 DoF) contain only the accelerometer and gyroscope, with three axis each. nine Degrees of Freedom (9 DoF) IMUs can be achieved by adding the magnetometer.
 
 IMUs by themselves are prone to errors, or drifts in the measurements over time. Therefore, the sensor data is usually calibrated, filtered, and combined using algorithms such as a Kalman Filter. Alternatively, average readings of multiple IMUs sensors are used to improve the accuracy of the measurements.
+
+### Week 6: Data visualisation and CW1 requirements
+
+#### Introduction to displays (LCD, OLED, TFT) for sensor data
+
+##### Dot matrix
+- you control each LED
+- typical size is 64 LED (8x8)
+- you can merge multiple dot matrices
+
+##### LCD
+- Liquid Crystal Display (LCD)
+- typical size is 16 characters per line x 2
+- backlit to illuminate
+- colour filters
+
+The LCD consists of a back light, liquid crystals in the middle, and RGB colour filtration films at the front. As the light is emitted in all directions, horizontal or vertical polarized light filters are used to change their direction.
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![LCD](../../../public/assets/cm3040/lcd.png)
+  </div>
+</div>
+
+##### OLED
+- Organic Light Emitting Diode (OLED)
+- typical size is 0.96 inch or 1.3 inch
+- pixels are controlled individually
+- accurate colours
+- higher power efficiency, smaller sizes, and more accurate colour displays than LCDs, though can be more costly
+
+##### TFT
+- Thin Film Transfer (TFT)
+- Uses transistors for each pixel
+- Non/Touch versions
+- varying resolution
+
+__N.B.: Go through the lecture video and lab on smart fridge part 5, and the same for smart door parts 1 and 2__
+
+
+#### Coursework 1 requirements
+
+key points:
+- 30% weighting
+- 1500 word limit
+- deadline: midterm
+- key requirements:
+  - investigate and review IoT projects
+  - identify problems, challenges, and propose own IoT project to develop by end of course
+  - create a design plan
+  - create an evaluation plan
+
+selecting a project:
+- review the list of topics
+- pick topic of most interest
+- identify problems and create an initial hypothesis
+- perform initial review by surveying papers, books and websites etc.
+- develop aims and objectives from the initial research (refine later)
+- start planning
+
+requirements:
+1. MAX 3 ESP-based microcontroller nodes
+2. MIN 3 sensors and/or actuators should be used per node
+3. developed using Arduino IDE only
+4. all nodes should be directly/indirectly linked
+5. all nodes have a:
+  - dashboard
+  - respond to REST-based HTTP requests in a JSON format
+6. external libraries for Arduino IDE and third-party commercial devices such as smart speakers e.g. alexa or google home, and one raspberry pi can be used, but are not mandatory
+7. Project-specific sensors and actuators outside the prerequisite kits can be used, but limited to a total of 3 ONLY
+
+example report structure:
+
+- abstract
+- introduction
+- methodology
+- literature review
+- project proposal
+- system design
+- test plan
+- implementation progress
+- summary/conclusion
+- references/appendices
+
+more details can be found in assessment 1 brief released when midterm starts
+
