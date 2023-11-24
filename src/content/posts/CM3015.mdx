@@ -178,7 +178,7 @@ Imagine you were to be given a large amount of images of goats and xylophones.
 With supervised learning, the images would be labelled either goat or xylophone, and the supervised learning algorithm would be trained on the data to be able to accurately predict if a given image is either of a goat or a xylophone.  
 With unsupervised learning the images would be clustered with respect to the contents of the images, with goat images clustering together and xylophones clustering together.  
 
-An easy way to break down a typecal ML problem the following:
+An easy way to break down a typical ML problem is the following:
 
 ![ml-typical](../../../public/ml-typic.png)
 
@@ -409,3 +409,154 @@ N.B. The algorithm for "moving the line" will be covered soon.
 These links will be helpful:
 - [linear algebra cheatsheet](https://ml-cheatsheet.readthedocs.io/en/latest/linear_algebra.html)
 - [Deep Learning book linear algebra section](https://www.deeplearningbook.org/contents/linear_algebra.html)
+
+### Week 6: Gradient Descent
+
+#### Gradient descent in 1D
+
+In the contrived example below, the loss function, <Latex formula="J(\theta)" />, is calculated for four different gradients and the outputs vs gradients are plotted on the RHS. In this case, the plot has a convex curve, and the point at which the loss function is zero, the gradient of the loss plot is also zero. 
+
+![gradient descent](../../../public/assets/cm3015/grad-desc.png)
+
+The benefit of the plot being convex is that an iterative technique called gradient descent can be used to automatically fit a line to the data.  
+The goal of gradient descent is to find the optimal parameter values that helps us to minimize our loss.
+
+So choosing a random point on the loss function curve, we calculate the gradient at that point. In the example below the initial gradient is a strongly positive gradient, so to get to the bottom of the curve (optimal parameter values) we must move left (where the gradient is lower).
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![gradient descent 1](../../../public/assets/cm3015/grad-desc-1.png)
+  </div>
+</div>
+
+The basic premise of gradient descent is that we need to be able to calculate the gradient at any point on the loss curve, and we want to move away from the steepest ascent or away from the steepest descent, and to do that, we need to be able to differentiate the loss function. So starting with the L2 loss function (with the line equation exploded):
+
+<Latex formula="J(\theta) = \frac{1}{2m} \displaystyle \sum_{i=1}^{m} (\theta_0+\theta_1 x_1^{(i)}-y^{(i)})^2" centered ={true} />
+
+We can differentiate (using partial derivatives, due to having two parameters, <Latex formula="\theta_0" /> and <Latex formula="\theta_1" />, but in this case we're only focusing on <Latex formula="\theta_1" />, 1D remember...) to get:
+
+<Latex formula="J_1'(\theta) = \frac{\delta J(\theta)}{\delta \theta_1} = \frac{1}{m} \displaystyle \sum_{i=1}^{m} (\theta_0+\theta_1 x_1^{(i)}-y^{(i)}) \cdot x_1^{(i)}" centered ={true} />
+
+So how does gradient descent work and how does it use the derivative function?  
+In the case of the example above, we want to slide down the slope. We want to move away from the steepest ascent, and to do that, we simply take a parameter value that we have, our current parameter value, and we subtract from it an _Alpha value_ multiplied the _derivative that we've calculated from that point_. The Alpha value is known as the __convergence rate__, and it changes the speed at which your gradient descent algorithm will happen.
+
+<Latex formula="\theta_1^{(2)} = \theta_1^{(1)} - \alpha J_1'(\theta^{(1)})" centered ={true} />
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![gradient descent 2](../../../public/assets/cm3015/grad-desc-2.png)
+  </div>
+</div>
+
+The key idea here is that if we are in a very steep part of the slope and it's ascending, so it's large and positive, then we want to move far away from it. By subtracting a big number, we move far away from it. But as we get to the bottom, so as we roll down the hill here and we get closer and closer to our convergence point, the slope gets smaller and smaller. This term that we're subtracting gets smaller and smaller. The derivative gets smaller and smaller, and that means that we start to move and more incremental steps until finally we reach the convergence point.
+
+In summary, the gradient descent algorithm works by first finding a point on the loss curve. You calculate the gradient at that point on the loss function, the derivative, and then you apply the gradient descent update rule, where you change your original parameter by an amount that's _dependent on the gradient that you calculated_. This continues down, until your algorithm converges and a minimum point is found.
+
+Attention must be paid to the convergence rate (a.k.a learning rate). The value is small (usually between 0 and 1), but if it is too small, the gradient descent algorithm moves far too slow as the steps between gradient calculations are too small.  
+If too large, the algorithm will never converge as it continuously jumps either side of of the minimum.
+
+#### Gradient descent in 2D
+
+So far, our gradient descent algorithm has only really dealt with one parameter. But we've conveniently ignored the fact that our linear regression equation has two parameters in it. See below the partial derivative with respect to <Latex formula="\theta_0" /> included as well:
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![gradient descent 2](../../../public/assets/cm3015/grad-desc-2d.png)
+  </div>
+</div>
+
+So gradient descent for this linear equation is actually a two dimensional problem, not one dimensional. This means we can start to think of the loss function of more of a bowl that a u-shape, where in one dimension we have <Latex formula="\theta_0" />, and in the other we have <Latex formula="\theta_1" /> and then the loss value as before, <Latex formula="J" />.  
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![gradient descent 2](../../../public/assets/cm3015/bowl.png)
+  </div>
+</div>
+
+The gradient descent algorithm is scalable to increasing the number of dimensions. So we do the same procedure. We initialize at a random point. We select some random values for <Latex formula="\theta_0" /> and <Latex formula="\theta_1" />, we calculate the loss, and plot that on a 3D plot.  
+We then iteratively use the update function. It's shown below in vector format, but what we're actually doing is an update on both of the parameters in parallel with one another. This continues until convergence is met.
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![gradient descent 2](../../../public/assets/cm3015/bowl-grad-desc-2d.png)
+  </div>
+</div>
+
+##### Batch gradient descent
+
+The type of gradient descent described so far is called batch gradient descent. It's called that because on every single iteration, it uses all of the data. This means it can be quite slow if there is a lot of data.  
+Below you can see a more general form of the update function:
+
+while not converged:
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    <Latex formula="\theta_j^{new} = \theta_j - \alpha \frac{1}{m} \displaystyle \sum_{i=1}^{m} (h_{\theta}(x^{(i)})-y^{(i)})x_j^{(i)}" /> 
+  </div>
+  <div>
+    for <Latex formula="j = 0, 1,... n" />
+  </div>
+</div>
+
+The difference between this update equation and the previous ones we've shown is that the theta value can be any number. So it's a _multivariant_ case. J could be from 0 to n.
+
+##### Stochastic gradient descent
+
+Instead of summing up over all of the data points, we choose one of the data points at random and update based on that. The advantage of this being that it's faster.
+
+while not converged:  
+i = random(1,m)  
+<Latex formula="\theta_j^{new} = \theta_j - \alpha (h_{\theta}(x^{(i)})-y^{(i)})x_j^{(i)}" />  for <Latex formula="j = 0, 1,... n" />
+
+It's a lot faster, but the problem is that it doesn't necessarily converge smoothly. What can happen is the gradient moves in a zigzag-like fashion, this can lead to problems and is not always the best solution
+
+##### Mini batch gradient descent
+
+A hybrid solution between these two is to do a thing called Mini Batch gradient descent, where you don't use all of the data at each time point, but instead you take a random sub-selection of data, and use that to evaluate your update.
+
+##### Multivariant
+
+In a more general form, our multi variant linear model looks like below:
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div style={'padding-right: 0.5em'}>
+    <img src='../../../public/assets/cm3015/multiv-1.png' />
+  </div>
+  <div style={'padding-left: 0.5em'}>
+    <img src='../../../public/assets/cm3015/multiv-2.png' />
+  </div>
+</div>
+
+Our hypothesis function is a combination of the parameters and multiplied by the variables that we have.
+
+One thing to bear in mind is that we've always got the <Latex formula="\theta_0" /> term (the offset or the bias term), and that's a constant, so that shouldn't be multiplied by any variable. We always have to bear that in mind, particularly if we're using Sigma notation. We always have remember <Latex formula="x_0 = 1" />
+
+#### Data scaling
+
+When you use multivariate data there can be issues, particularly with gradient descent, with the scaling of the values. In the above example, the number of hours flying is in the tens and maybe up to 100, whereas the number of kilowatt-hours used in the home can be 10,000 or more. The scaling of these values is vastly different. What this means is that when we try to learn a linear model, our <Latex formula="\theta" /> values can be quite off from one another.
+
+A practical step often taken in machine learning is to scale the data beforehand. A common way of doing this is by _min-max normalization_, which forces all numbers between 0 and 1:
+
+<Latex formula="x_j^s = \frac{x_j - min(x_j)}{max(x_j) - min(x_j)}" centered={true} />
+
+The benefit of this is that the gradient descent algorithm will converge faster, as depicted in the image below:
+
+![normalised converge](../../../public/assets/cm3015/normalised-converge.png)
+
+Min-max normalisation isn't the only way to normalise, there are other methods, e.g. _range normalisation (centred on mean)_ and _standardisation (z-score)_. Range normalisation centres the data along the mean:
+
+<Latex formula="x_j^s = \frac{x_j - mean(x_j)}{max(x_j) - min(x_j)}" centered={true} />
+
+For standardisation (z-score), all the data is centered on the mean, but rather than between zero and one, we're dividing by standard deviation of our data set:
+
+<Latex formula="x_j^s = \frac{x_j - mean(x_j)}{std(x_j)}" centered={true} />
+
+#### Polynomial regression
+
+Data can complicated and sometimes a line doesn't always do it. In the example below LHS the line doesn't fit the data very well. It's almost too simple.
+
+We can increase the number of features without adding any extra variables. So in the example above, C02 was dependent on the number of miles someone drove, or the amount of meat they ate, or the amount of electricity used etc. Rather than introducing new variables, we could stick with the same variable. So just using the number of miles someone drives, but then try and make it fit the data by squaring it or taking the square root of it.  
+So we can create say a quadratic equation which may fit our data better. In the middle below we see if we add a quadratic term, <Latex formula="\theta_2x^2" />, it starts to fit it a bit better.  
+And then if we take a 3rd order polynomial term (below RHS), we add another term <Latex formula="\theta_3x^3" /> and it fits the data even better. So this polynomial approximation is a simple way of actually trying to fit our data better.  
+_It's still a linear equation i.e. the parameters are linear, but the data itself is non-linear._
+
+![polynomial regression](../../../public/assets/cm3015/poly-reg.png)
