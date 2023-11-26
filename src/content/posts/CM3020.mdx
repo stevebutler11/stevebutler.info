@@ -899,3 +899,172 @@ It's worth noting that genetic algorithms lend themselves to being computed in p
 
 Watch MYK's video on Karl Sims creatures for an overview of how he used genetic algorithms
 
+### Week 7: Building robots using pybullet and URDF files
+
+#### Key components in the creatures system
+
+##### Overview of GA
+
+Three phases:
+1. start with population with varied heredity
+2. some sort of test applied (selection)
+3. variations of the winners/survivors (breeding)
+
+> “The most creative and challenging parts of programming a GA are usually the problem-specific aspects”  
+> __Harvey, Inman. "The microbial genetic algorithm." European conference on artificial life. Springer, Berlin, Heidelberg, 2009__
+
+##### Phenotype
+
+We will roughly follow Sims, but with simplifications. We’ll use [URDF](http://wiki.ros.org/urdf) format to specify our phenotype, this will be automatically generated in accordance with out genotype.
+
+##### Simulation
+
+[pybullet](https://pybullet.org/wordpress/) will be used for the physics simulation
+
+##### Genotype
+
+Again, we’ll follow Sims somewhat, but with simplifications.
+
+##### Fitness function
+
+The fitness function will basically be: 'how far does it move?'. Bearing in mind that GA's have a tendency to cheat by finding loopholes in physics simulations.
+
+##### Pupulation model
+
+We'll use the roulette wheel selection model described earlier.
+
+##### Compute in parallel
+
+We'll design the system with explicit parallelism.
+
+#### Introduction to pybullet
+
+pybullet is based on the bullet rigid and soft body physics engine. The python bindings have improvements added for robotics, reinforcement learning and VR.
+
+MYK shows how to install using a venv, installing the relevant packages: pybullet, ipython (MYK's preferred ide), and numpy
+
+```python
+import pybullet as p
+
+# connect to a simulation environent,
+# specifying the type of environment
+p.connect(p.GUI)
+```
+
+#### Creating things in the world
+
+Pybullet separates the look of a shape from the way it behaves when colliding. This way you can specify the type of collision detection (e.g. bouding box) so as to control the amount of computational complexity needed.
+
+##### adding a floor
+
+first you need to specify the geometry of the shape, before the shape can be created. The geometry will then be used twice, once for the collision and one for the visual:
+
+```python
+import pybullet as p
+
+p.connect(p.GUI)
+
+floor_shape = p.createCollisionShape(p.GEOM_PLANE)
+
+# use floor_shape twice for visual and collison geometry
+floor = p.createMultiBody(floor_shape, floor_shape)
+```
+
+##### Get a shape on screen
+
+```python
+import pybullet as p
+
+p.connect(p.GUI)
+
+floor_shape = p.createCollisionShape(p.GEOM_PLANE)
+floor = p.createMultiBody(floor_shape, floor_shape)
+
+box_shape = p.createCollisionShape(p.GEOM_BOX, halfExtents=[1, 1, 1])
+box = p.createMultiBody(box_shape, box_shape)
+
+p.setGravity(0, 0, -10)
+
+p.setRealTimeSimulation(1)
+```
+
+#### The URDF file format
+
+##### what is URDF?
+
+Unified Robot Description Format (URDF) is an XML based file format for specifying robot models, including their motors and other dynamics. Tutorials can be found [here](http://wiki.ros.org/urdf/Tutorials/Building%20a%20Visual%20Robot%20Model%20with%20URDF%20from%20ScratchA)
+
+##### why use URDF?
+
+Programmatically generating models is overly complex. Also we more easily share models if we have a standardised format.
+
+##### loading a pre-made URDF model
+
+pybullet comes with some standard URDF models already built in. You can access them in the folder:
+
+```python
+import pybullet as p
+import pybullet_data
+
+print(pybullet_data.getDataPath())
+```
+
+you can then load the model like below:
+
+```python
+import pybullet as p
+import pybullet_data
+
+p.connect(p.GUI)
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
+# the floor
+p.createCollisionShape(p.GEOM_PLANE)
+p.createMultiBody(0, 0)
+
+ur_file = 'r2d2.urdf'
+creatureId = p.loadURDF(ur_file)
+
+p.setGravity(0, 0, -10)
+
+p.setRealTimeSimulation(1)
+```
+
+#### Write a URDF file from scratch
+
+Watch MYK's video on writing a URDF file.
+
+#### Moving a URDF file
+
+There are three types of joint in pybullet (there's more that can be used in a URDF file, but pybullet currently only supports the three 1 dof joints). The joints are:
+- revolute (rotate)
+- prismatic (move along a axis)
+- fixed (does not move)
+
+##### moving the joint in a two link robot
+
+```python
+import pybullet as p
+import pybullet_data
+
+p.connect(p.GUI)
+p.setPhysicsEngineParameter(enableFileCaching=0) # this needs to be set when editing URDF files else changes won't be seen
+p.configureDebugVisualizer(p.COV_ENABLE_GUI, 0) # hides side bars in GUI
+
+# the floor
+p.createCollisionShape(p.GEOM_PLANE)
+p.createMultiBody(0, 0)
+
+rob1 = '101.urdf'
+robotId = p.loadURDF(rob1)
+
+p.setGravity(0, 0, -10)
+p.setRealTimeSimulation(1)
+
+p.resetBasePositionAndOrientation(rob1, [0, 0, 0.2], [0, 0, 0, 1])
+
+p.setMotorJointControl2(rob1, 0, controlMode=p.VELOCITY_CONTROL, targetVelocity=5) 
+```
+
+__N.B. read the lab sheet for this week__
+
