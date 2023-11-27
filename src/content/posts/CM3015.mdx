@@ -560,3 +560,145 @@ And then if we take a 3rd order polynomial term (below RHS), we add another term
 _It's still a linear equation i.e. the parameters are linear, but the data itself is non-linear._
 
 ![polynomial regression](../../../public/assets/cm3015/poly-reg.png)
+
+#### Gradient descent lab notebook
+
+<iframe
+  src="/assets/cm3015/gradient-descent.html"
+  width="100%"
+  style={{height: '70vh'}}
+></iframe>
+
+### Week 7: Model evaluation and improvement
+
+#### Bias Variance (overfitting and underfitting)
+
+Imagine you've tried fitting a line onto some data points. __Underfitting__ would be if the line was overly simple, inflexible, and did not fit the data very well. It could be described as having _'high bias'_.  
+Overfitting would be the line fitting the data much better, but it has a high variance and is overly complex.
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![overfitting underfitting](../../../public/assets/cm3015/over-under.png)
+  </div>
+</div>
+
+Ideally what you want is something in between, a simpler quadratic curve in this particular instance which fits the data just right:
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![perfect fitting](../../../public/assets/cm3015/perf-fit.png)
+  </div>
+</div>
+
+The idea of trying to tune your models so that they get this 'just right' situation is basically what we're trying to do. We're trying to make our model generalizable, so that fits the data very well, but it's generalizable to new data that we've not seen before.
+
+##### Bias-variance curve
+
+If we want to evaluate a machine learning solution to be generalizable to new data, to be a solution that just fits, we could use the bias-variance curve. The bias-variance curve allows us to plot along the x-axis some measure of model complexity. If we're using polynomial models, we could use the degree of polynomial, and on the y would be the amount of error. When we're training our data using a set of data and we're testing on the same data, we tend to see a curve like this:
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![perfect fitting](../../../public/assets/cm3015/bv-curve.png)
+  </div>
+</div>
+
+The error goes down as the model gets more complex. However, if we then test it on data that we haven't seen before that we've kept aside (our test set), we get a slightly different curve and this is our _testing error_. At the start the error goes down, It then reaches a sweet spot where it seems relatively low, but then it starts to rise again The error goes up as the model becomes more complex. The model is too simple or has too few features to really describe what's going on.  
+At the other end, we have overfitting. This is where we have a high variance in the model. It fits the training data really well, but it does not generalize to the unseen data, the testing error goes up. Arguably, this is because the model is too complex, so it has too many features. Ideally, we want the sweet spot somewhere in the middle, which gives us a nice model which is generalizable to unseen data.
+
+There are two basic approaches to ensure our model is more generalisable:
+
+###### Reduce the number of features
+- manually select which features to keep
+- use a model selection algorithm e.g. cross-validation
+
+###### Regularisation
+- keep all the features, but reduce the values of parameters, <Latex formula='\theta_j' />
+- works well when there's a lot of features
+
+#### Regularisation
+
+Regularisation is a method of penalizing complexity in our machine learning model. For the example above, see the two curves that fit the data. Both the 4th order polynomial and the quadratic function have a loss value of zero. How do we design our model selection algorithm to be able to favor the quadratic (loss complex) approach?
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![fitting curves](../../../public/assets/cm3015/fitting-curves.png)
+  </div>
+</div>
+
+One thing we could do is have a look at the parameters involved. If we look at all the parameters in the first model (4th order polynomial), we can make a vector of all of those. If we were to square them all so they're positive and sum them up, we'd have a number, in this case it's 25. If we do the same for the simpler model there are fewer parameters, and if we sum up their parameters, we see the square of each of them summed up is only 1.2, it's _much less_. We can use these parameter combinations to help us decide.  
+Regularization is where we add a penalty to the loss function based on this complexity measure. We can base it on <Latex formula='\theta^2' />, which is called __L2 regularization__. We're squaring the parameters to ensure that they're positive.  
+Alternatively we could take the absolute value of the parameters, and that's known as __L1 regularization__. In this case we'll going focus on L2.
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![regularisation](../../../public/assets/cm3015/regularisation.png)
+  </div>
+</div>
+
+See below the loss function mentioned previously, but modified accordingly. This is the __regularised loss__:
+
+<Latex formula="J(\theta) = \frac{1}{2m} \displaystyle \sum_{i=1}^{m} (h_\theta (x^{(i)})-y^{(i)})^2 + \lambda \sum_{j=1}^{n} \theta_j^2" centered ={true} />
+
+An important hyperparameter in regularised loss is the lambda value, and this is known as the __regularisation hyperparameter__. If this hyperparameter lambda is too big, the algorithm underfits, the data values are forced to become very small and the model becomes very simple. Equally, if the lambda value is too small, then the algorithm may over-fit. That will force the theta value to become very large, and essentially the regularisation term isn't really having an effect.
+
+Where regularization is very useful is when we apply it within the gradient descent algorithm. We've just calculated our new regularized loss function, but how do we fit that into our gradient descent update rule?
+
+The gradient descent algorithm works the same as before. First, randomly initialise all our parameters, then within a loop we:
+1. calculate the loss (now the regularised loss)
+2. call the update functions
+  - we update the bias term without regularisation
+  - for all other parameters we'll update them using a regularised function as shown here (this is the differentiated version of regularised loss):
+
+<Latex formula="\theta_0^{new} = \theta_0 - \frac{\alpha}{m} \displaystyle \sum_{i=1}^{m} (h_{\theta}(x^{(i)})-y^{(i)})" centered={true} />
+<Latex formula="\theta_j^{new} = \theta_j - \frac{\alpha}{m} \displaystyle \sum_{i=1}^{m} (h_{\theta}(x^{(i)})-y^{(i)})x_h^{(i)}- \lambda \theta_j" centered={true} />
+
+3. end loop when converged i.e. <Latex formula="J(\theta) \cong J(\theta^{new})" />
+
+#### Cross-validation
+
+To avoid overfitting it's important that the data we use to train an algorithm is not the same as the data we use to then test it. We typically have a train-test split in our data, e.g. 10 percent, put aside for testing purposes. The rest of the data we then use to train our algorithms, and when our algorithms are ready to be tested, we take the data we have not used and test it on that to get a result.  
+Usually we don't have enough data to do this with, so you can implement an approach that maximizes the use of data, called n-fold cross-validation. 
+
+
+##### N-fold cross-validation
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![cross validation](../../../public/assets/cm3015/cross-validation.png)
+  </div>
+</div>
+
+Essentially you split the data up into n-sections, in the example above the data is split into 4 sections. On the first go around, you use the first section as test data and the last three sections as training data. You train and then test, keeping track of your error score with this run.  
+The next step you test with the second section and train with the remaining three sections. train, test, keep error score and repeat... The error of training is the average of the errors recorded.
+
+N-fold cross-validation works well for evaluating algorithms with fixed parameters e.g. <Latex formula="k = 1" />, <Latex formula="distance = Euclidean" />, but what about a set of parameters? e.g. <Latex formula="k = \{1, 2, 3, 4, 5\}" />, <Latex formula="distance = \{Euclidean, Manhattan\}" />
+We could keep the best parameters on the training set, but optimising on the training set leads to overfitting. We could keep the best parameters on the test set, but we shouldn't use test data for training.  
+
+The solution instead is to on each iteration, split the data into test, train, and _validation_ sets. The validation set allows us to evaluate our hyperparameters. This is called N-fold nested cross-validation
+
+##### N-fold nested cross-validation
+
+We first split the dataset into a train and test set. This is our first fold. Within that fold, we then take that train set and subdivide that into an inner loop with a smaller training set and a validation set. We evaluate some of hyperparameters, k = 1 and Euclidean distance are the two hyperparameters. We train up our algorithm, we test it on the small validation set, we then change the hyperparameters, test out again on the validation set and so on. We go through all our possible hyperparameters and evaluate them. We then choose the best parameters, and feed those back into our original fold. This time we use our larger training set using the best parameters profound, and we evaluate them on our test set to get our final result for that fold, which we store.  so we'll have an error <Latex formula='e_1'/> for fold one. 
+
+<div style={'display: flex; flex-direction: row; justify-content: center; align-items: center;'}>
+  <div>
+    ![n-fold](../../../public/assets/cm3015/n-fold.png)
+  </div>
+</div>
+
+We then repeat the same thing for fold two, and then again for fold three and in fold four. We have this four fold nested cross-validation, where we take the average error over all over folds.
+
+<Latex formula='e_{total}=\frac{1}{n} \displaystyle \sum_{i=1}^{n}e_i' centered={true} />
+
+#### The curse of dimensionality
+
+__N.B. Watch the lecture video on the curse of dimensionality__
+
+#### Cross-validation lab notebook
+
+<iframe
+  src="/assets/cm3015/cross-validation.html"
+  width="100%"
+  style={{height: '70vh'}}
+></iframe>
+
