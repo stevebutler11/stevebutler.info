@@ -1087,3 +1087,92 @@ Watch MYK's 'Faster convolution with the DFT' video, where he runs through the b
   style={{height: '70vh'}}
 ></iframe>
 
+## Week 7: Extracting features from audio signals - part 1
+
+### Introduction to audio feature extraction
+
+#### What is an audio feature?
+
+An audio feature is a measurement of a particular characteristic of an audio signal, and it gives us insight into what the signal contains. Some audio feature examples are:
+- energy
+- spectrum
+- fundamental frequency
+- loudness
+- brightness
+- pitch
+- rhythm
+- ...
+
+
+#### How can audio features be extracted?
+
+Audio features can be measured by running an algorithm on an audio signal that will return a number, or a set of numbers that quantify the characteristic that the specific algorithm is intended to measure. Feature extraction can be 'real-time' or 'non-real-time'. Some audio feature extraction toolboxes include:
+- librosa (python)
+- YAAFE (C++, can be used in python or matlab)
+- Meyda (js, web)
+
+Audio features can be extracted from the time domain representation of audio or the frequency domain representation.
+
+#### Applications of audio features
+
+- real-time audio visualisations
+- visual score generation
+- speech recognition
+- music recommendation
+- music genre classification
+- feature-based synthesis
+- feature extraction linked to audio effects
+- ...
+
+#### Time-domain features
+
+- energy
+- RMS energy (RMSE)
+- Zero rossing rate (ZCR)
+- Amplitude envelope (AE) (loudness)
+- ...
+
+#### Frequency-domain features
+
+- spectral centroid
+- spectral rolloff
+- spectral flatness
+- spectral flux
+- spectral slope
+- spectral spread
+- mel-frequency cepstral coefficients (MFCC)
+- ...
+
+#### RMS energy (RMSE)
+- calculates the RMS of a signal or a frame of a signal
+- indicator of loudness
+- less sensitive to outliers than amplitude envelope
+- used for:
+  - audio segmentation
+  - music genre classification
+- the formula that formalises this concept:
+
+<Latex formula="\sqrt{\frac{1}{n} \displaystyle \sum_{n} |x_{(n)}^2|}" centered={true} />
+
+<div style={'display: flex; flex-direction: row; justify-content: space-around; align-items: center;'}>
+  <div>
+    ![3D spectrum](../../../public/assets/cm3065/rmse.png)
+  </div>
+</div>
+
+#### Zero crossing rate (ZCR)
+
+- the number of times that the signal crosses the zero value in a frame
+- recognition of percussive vs pitched sounds
+- used for:
+  - monophonic pitch estimation
+  - speech recognition for voice activity detection
+
+#### Spectral centroid
+
+- indicates where the spectral 'centre of mass' or 'centre of gravity' of a sound is located
+- it is an indicator of 'brightness' of a sound
+- e.g. it can be used to classify a bass guitar (low spectral centroid) from a trumpet (high spectral centroid)
+
+__N.B. Watch 3 lecture videos on real-time audio visualisations with p5.js and one with Meyda__  
+
