@@ -1072,14 +1072,147 @@ __N.B. read the lab sheet for this week__
 
 Watch the lecture videos this week as MYK goes in depth on creating URDF files from randomised gene data. The lab sheets can be seen below and also the accompanying code.
 
-### Lab sheet 1: 
-### Lab sheet 2: 
-### Lab sheet 3: 
-### Lab sheet 4: 
-### Lab sheet 5: 
+#### Lab sheet 1: 
+#### Lab sheet 2: 
+#### Lab sheet 3: 
+#### Lab sheet 4: 
+#### Lab sheet 5: 
 
 #### Creatures code for week 8
 
 Code for this week can be found [here](https://github.com/stevebutler11/creatures)
 
 
+## AI and creativity
+
+### Week 11: Introduction to generative systems
+
+#### Introduction to generative systems
+
+passive tool: doesn't do anything of it's own accord (e.g. paintbrush)
+active tool: proccesses what the user is doing and tries to interpret it and add to it. 'fill in the blanks' (e.g. sketchRNN, DALL-E, Conway's game of life)
+
+##### Taxonomies of creative systems
+Boden and edmonds came up with 11, three of which are below:
+
+2. C-art uses computers as part of the art-making process (e.g. any computer based drawing app, or sketchRNN, DALL-E etc)
+5. G-art works are generated, at least in part, by some process that is not under the artist's direct control (e.g. sketchRNN, Dall-E, Game of Life)
+6. CG-art is produced by leaving a computer program to run by itself, with minimal or zero interference from a human being (e.g. DALL-E)
+
+##### Features
+Tatar and Pasquier came up with common features to differentiate generative systems (their research is mainly based on music systems):
+- System Architecture
+- Number of agents
+- Roles
+- Environment (live performance, offline)
+- Corpus (what's it been trained on)
+- Input
+- Output
+- Communication (how does it communicate with itself and a human)
+- Human Interactivity Modality (how does the human interact with the thing)
+- Task
+- Evaluation
+
+### Worked example of a generative system
+
+Start witn a word sequence: “the problem with the pop music industry is the music”
+Let’s convert that into a first order Markov model by making a state transition table:
+
+##### first order model
+
+The → problem
+Problem → with
+With → the
+The → pop
+Pop → music
+Music → industry
+Industry → is
+Is → the
+The → music 
+
+tidied, this looks like:
+
+The → problem
+    → music
+    → pop
+Problem → with
+With → the
+Pop → music
+Music → industry
+Industry → is
+Is → the
+
+and the algorithm to run this:
+
+1) Pick a random state from observed states
+2) Select from possible next states, back to 2)
+3) If no possible next state, back to 1)
+
+##### second order model
+A second order model would look like:
+
+The problem → with
+Problem with → the
+With the → music
+The music → industry
+Music industry → is
+Industry is → the
+Is the → music
+
+A higher order leads to a less rich model as it limits how many different observations there are.
+Also, the more text you feed a markov model, the richer the model becomes
+
+##### how are more complex models different?
+
+- They have a more complex model of the sequence than a transition table.
+- They have a more complex method for picking the next state/ output, including more complex state
+
+examples:
+- variable order markov model
+- Long Short Term Memory network (LSTM)
+- Transformer network
+
+#### Coding up a Markovian text generator and training it
+
+```python
+import random
+
+input = "once upon a time there was a man who was never on time ever"
+
+with open('sonnets.txt') as f:
+  input = f.read()
+
+input = input.replace('\n', ' ')
+
+words = input.split(" ")
+print(words)
+
+model = {}
+
+for i in range(0, len(words) - 1):
+  state1 = words[i]
+  state2 = words[i+1]
+
+  if state1 not in model:
+    model[state1] = []
+
+  model[state1].append(state2)
+
+print(model)
+
+s = random.choice(list(model.keys()))
+output = s
+
+for i in range(10):
+  if s not in model:
+    break
+
+  s = random.choice(model[s])
+  output = output + " " + s
+
+print(output)
+```
+
+### Week 12: Generating lyrics with GPT-2
+
+#### What is a transformer
