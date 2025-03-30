@@ -4,6 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  site: "https://www.stevebutler.info",
+  site: "https://stevebutler11.github.io",
+  base: "/stevebutler.info",
   integrations: [mdx(), sitemap(), tailwind()],
 });
