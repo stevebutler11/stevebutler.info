@@ -5,6 +5,5 @@ import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
   site: "https://stevebutler.info",
-  base: "/stevebutler.info",
   integrations: [mdx(), sitemap(), tailwind()],
 });
